@@ -16,6 +16,30 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+
+	<developers>
+		<developer>
+			<id>antoniogalluzzi</id>
+			<name>Antonio Galluzzi</name>
+			<email>antonio.galluzzi@example.com</email>
+			<organization>Personal Project</organization>
+			<organizationUrl>https://github.com/antoniogalluzzi</organizationUrl>
+			<roles>
+				<role>Developer</role>
+				<role>Maintainer</role>
+			</roles>
+			<timezone>Europe/Rome</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

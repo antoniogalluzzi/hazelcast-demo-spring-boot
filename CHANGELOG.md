@@ -62,3 +62,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hazelcast XML configuration
 - Logback configuration for JSON logging
 - Git initialization and remote repository setup
+
+---
+
+## 📝 Informazioni sull'Autore
+
+**Antonio Galluzzi**
+- **GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)
+- **Email**: antonio.galluzzi@example.com
+- **Progetto**: [hazelcast-demo-spring-boot](https://github.com/antoniogalluzzi/hazelcast-demo-spring-boot)
+
+Questo progetto è stato creato e mantenuto da Antonio Galluzzi come dimostrazione dell'integrazione tra Spring Boot e Hazelcast per la cache distribuita.

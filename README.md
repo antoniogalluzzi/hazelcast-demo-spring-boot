@@ -1,8 +1,30 @@
-# Hazelcast Demo Project
+# Ha## 👤 Autore
+
+**Antonio Galluzzi**
+- **GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)
+- **Email**: antonio.galluzzi@example.com
+- **Ruolo**: Sviluppatore e Manutentore
+
+## 📄 Licenza
+
+Questo progetto è distribuito sotto licenza **Apache License 2.0**.
+
+Vedi il file [LICENSE](LICENSE) per i dettagli completi sulla licenza.
+
+Copyright 2025 Antonio Galluzzi
+
+## 📋 Registro delle ModificheDemo Project
 
 Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distribuita e PostgreSQL come database su OpenShift.
 
-## 📋 Registro delle Modifiche
+## � Autore
+
+**Antonio Galluzzi**
+- **GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)
+- **Email**: antonio.galluzzi@example.com
+- **Ruolo**: Sviluppatore e Manutentore
+
+## �📋 Registro delle Modifiche
 
 Vedi [CHANGELOG.md](CHANGELOG.md) per il registro completo delle modifiche e aggiornamenti del progetto.
 
