@@ -15,6 +15,7 @@
  *
  * Author: Antonio Galluzzi
  * GitHub: https://github.com/antoniogalluzzi
+ * Email: antonio.galluzzi91@gmail.com
  */
 
 package com.example.hazelcastdemo;

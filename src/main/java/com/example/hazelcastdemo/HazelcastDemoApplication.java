@@ -15,6 +15,7 @@
  *
  * Author: Antonio Galluzzi
  * GitHub: https://github.com/antoniogalluzzi
+ * Email: antonio.galluzzi91@gmail.com
  * Project: https://github.com/antoniogalluzzi/hazelcast-demo-spring-boot
  */
 

@@ -2,7 +2,7 @@
 
 **Antonio Galluzzi**
 - **GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)
-- **Email**: antonio.galluzzi@example.com
+- **Email**: antonio.galluzzi91@gmail.com
 - **Ruolo**: Sviluppatore e Manutentore
 
 ## 📄 Licenza
