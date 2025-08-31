@@ -7,11 +7,7 @@
     <network>
         <port auto-increment="true">5701</port>
         <join>
-            <kubernetes enabled="true">
-                <properties>
-                    <property name="namespace">${KUBERNETES_NAMESPACE:default}</property>
-                </properties>
-            </kubernetes>
+            <multicast enabled="true"/>
         </join>
     </network>
 

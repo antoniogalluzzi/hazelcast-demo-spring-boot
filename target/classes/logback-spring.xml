@@ -8,7 +8,7 @@
 
     <!-- JSON pattern for centralized logging -->
     <property name="JSON_PATTERN"
-              value="{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level","logger":"%logger","thread":"%thread","message":"%message","mdc":{},"stack_trace":"%exception"}%n"/>
+              value='{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}","level":"%level","logger":"%logger","thread":"%thread","message":"%message","mdc":{},"stack_trace":"%exception"}%n'/>
 
     <!-- Console appender for development -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

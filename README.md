@@ -2,6 +2,10 @@
 
 Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distribuita e PostgreSQL come database su OpenShift.
 
+## 📋 Registro delle Modifiche
+
+Vedi [CHANGELOG.md](CHANGELOG.md) per il registro completo delle modifiche e aggiornamenti del progetto.
+
 ## Prerequisiti
 
 - Java 21
