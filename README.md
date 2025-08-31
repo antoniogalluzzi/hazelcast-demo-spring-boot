@@ -555,6 +555,17 @@ Una volta avviata l'applicazione, la documentazione interattiva API è disponibi
 - **JSON**: `/v3/api-docs`
 - **YAML**: `/v3/api-docs.yaml`
 
+### Informazioni API Configurate
+La documentazione OpenAPI include le seguenti informazioni:
+- **Titolo**: Hazelcast Demo API
+- **Versione**: 1.0.0
+- **Descrizione**: API per dimostrazione cache distribuita con Hazelcast
+- **Contatto**: Antonio Galluzzi (antonio.galluzzi91@gmail.com)
+- **Licenza**: Apache 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+- **Server**:
+  - **Sviluppo**: http://localhost:8080
+  - **Produzione**: https://hazelcast-demo.apps.openshift.com
+
 ### Endpoint Documentati
 - `GET /user/{id}` - Recupera utente con cache distribuita
 - `POST /user` - Crea nuovo utente

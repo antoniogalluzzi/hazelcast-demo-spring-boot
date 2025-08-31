@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Development profile with H2 database and multicast Hazelcast discovery
   - Staging profile with TCP Hazelcast discovery for containerized environments
   - Production profile with Kubernetes Hazelcast discovery
+- **Enhanced OpenAPI Documentation**:
+  - Added detailed API information (title, version, description)
+  - Configured contact information and Apache 2.0 license
+  - Added server configurations for local development and OpenShift production
+  - Improved Swagger UI with complete metadata
 - **Comprehensive Documentation**:
   - `README.md` with deployment instructions for all environments
   - `api-testing.md` with API testing examples
