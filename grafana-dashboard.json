@@ -1,0 +1,196 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Hazelcast Demo Dashboard",
+    "tags": ["hazelcast", "spring-boot", "prometheus"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{job=\"hazelcast-demo\"}",
+            "legendFormat": "{{area}} - Used"
+          },
+          {
+            "expr": "jvm_memory_committed_bytes{job=\"hazelcast-demo\"}",
+            "legendFormat": "{{area}} - Committed"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "bytes",
+            "label": "Memory"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "HTTP Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_server_requests_seconds_count{job=\"hazelcast-demo\"}[5m])",
+            "legendFormat": "{{method}} {{uri}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "reqps",
+            "label": "Requests/sec"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "HTTP Response Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket{job=\"hazelcast-demo\"}[5m]))",
+            "legendFormat": "95th percentile"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(http_server_requests_seconds_bucket{job=\"hazelcast-demo\"}[5m]))",
+            "legendFormat": "50th percentile"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "s",
+            "label": "Response Time"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Hazelcast Cache Operations",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(hazelcast_cache_gets_total{job=\"hazelcast-demo\"}[5m])",
+            "legendFormat": "Gets"
+          },
+          {
+            "expr": "rate(hazelcast_cache_puts_total{job=\"hazelcast-demo\"}[5m])",
+            "legendFormat": "Puts"
+          },
+          {
+            "expr": "rate(hazelcast_cache_removals_total{job=\"hazelcast-demo\"}[5m])",
+            "legendFormat": "Removals"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "ops",
+            "label": "Operations/sec"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Hazelcast Cache Hit Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(hazelcast_cache_hits_total{job=\"hazelcast-demo\"}[5m]) / rate(hazelcast_cache_gets_total{job=\"hazelcast-demo\"}[5m])",
+            "legendFormat": "Hit Rate"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "percentunit",
+            "label": "Hit Rate"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Hazelcast Cluster Size",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "hazelcast_cluster_size{job=\"hazelcast-demo\"}",
+            "legendFormat": "Cluster Size"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Database Connections",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "hikaricp_connections_active{job=\"hazelcast-demo\"}",
+            "legendFormat": "Active"
+          },
+          {
+            "expr": "hikaricp_connections_idle{job=\"hazelcast-demo\"}",
+            "legendFormat": "Idle"
+          },
+          {
+            "expr": "hikaricp_connections_pending{job=\"hazelcast-demo\"}",
+            "legendFormat": "Pending"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "short",
+            "label": "Connections"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Pod CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{pod=~\"hazelcast-demo-.*\"}[5m])",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "percentunit",
+            "label": "CPU Usage"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Pod Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{pod=~\"hazelcast-demo-.*\"}",
+            "legendFormat": "{{pod}}"
+          }
+        ],
+        "yAxes": [
+          {
+            "format": "bytes",
+            "label": "Memory Usage"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": "30s",
+    "schemaVersion": 27,
+    "version": 0,
+    "links": []
+  }
+}

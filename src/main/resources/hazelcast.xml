@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.hazelcast.com/schema/config
+           http://www.hazelcast.com/schema/config/hazelcast-config-5.0.xsd">
+
+    <network>
+        <port auto-increment="true">5701</port>
+        <join>
+            <kubernetes enabled="true">
+                <properties>
+                    <property name="namespace">${KUBERNETES_NAMESPACE:default}</property>
+                </properties>
+            </kubernetes>
+        </join>
+    </network>
+
+    <cache name="users">
+        <key-type class-name="java.lang.Long"/>
+        <value-type class-name="com.example.hazelcastdemo.User"/>
+    </cache>
+
+</hazelcast>
