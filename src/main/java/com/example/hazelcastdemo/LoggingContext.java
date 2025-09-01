@@ -2,7 +2,7 @@ package com.example.hazelcastdemo;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 

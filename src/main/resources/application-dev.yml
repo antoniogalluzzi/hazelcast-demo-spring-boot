@@ -17,6 +17,7 @@ spring:
       enabled: true
 
 hazelcast:
+  config: classpath:hazelcast.xml
   network:
     join:
       multicast:
@@ -24,5 +25,5 @@ hazelcast:
 
 logging:
   level:
-    com.example: DEBUG
-    org.springframework: INFO
+    '[com.example]': DEBUG
+    '[org.springframework]': INFO

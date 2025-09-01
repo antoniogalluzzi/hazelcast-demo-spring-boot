@@ -20,6 +20,7 @@ spring:
         order_updates: true
 
 hazelcast:
+  config: classpath:hazelcast.xml
   network:
     join:
       kubernetes:
@@ -33,15 +34,15 @@ hazelcast:
 
 logging:
   level:
-    com.example: INFO
-    org.springframework: WARN
-    org.hibernate: ERROR
+    '[com.example]': INFO
+    '[org.springframework]': WARN
+    '[org.hibernate]': ERROR
 
 management:
   endpoints:
     web:
       exposure:
-  include: health,info,metrics
+        include: health,info,metrics
   endpoint:
     health:
       show-details: when-authorized
