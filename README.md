@@ -2,7 +2,35 @@
 
 Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distribuita e PostgreSQL come database su OpenShift.
 
-## 👤 Autore
+## � Indice
+
+- [👤 Autore](#-autore)
+- [📄 Licenza](#-licenza)
+- [📋 Registro delle Modifiche](#-registro-delle-modifiche)
+- [Prerequisiti](#prerequisiti)
+- [💻 Sviluppo Locale con H2](#-sviluppo-locale-con-h2)
+  - [Configurazione H2](#configurazione-h2)
+  - [Avvio in Modalità Sviluppo](#avvio-in-modalità-sviluppo)
+  - [Accesso alla Console H2](#accesso-alla-console-h2)
+  - [Caratteristiche H2 per Sviluppo](#caratteristiche-h2-per-sviluppo)
+  - [Test delle API con H2](#test-delle-api-con-h2)
+  - [Transizione Produzione](#transizione-produzione)
+- [Build](#build)
+- [Docker](#docker)
+- [🚀 Deploy su OpenShift Local](#-deploy-su-openshift-local)
+  - [Setup Automatico (Raccomandato)](#setup-automatico-raccomandato)
+  - [Setup Manuale](#setup-manuale)
+- [🧪 Test e Validazione](#-test-e-validazione)
+  - [Test Cache Distribuita Multi-Istanza](#test-cache-distribuita-multi-istanza)
+  - [Test API REST](#test-api-rest)
+  - [Test Compilazione e Build](#test-compilazione-e-build)
+  - [Test Logging e Monitoraggio](#test-logging-e-monitoraggio)
+  - [Test Database](#test-database)
+  - [Test Sicurezza e Configurazione](#test-sicurezza-e-configurazione)
+- [📚 Documentazione Avanzata](#-documentazione-avanzata)
+  - [API Documentation](#api-documentation)
+
+## �👤 Autore
 
 **Antonio Galluzzi**
 - **GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)
