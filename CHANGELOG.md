@@ -36,6 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - PowerShell setup script for OpenShift local
 
 ### Changed
+- **Cross-Platform Documentation**: Updated all guide files for Windows and Linux/Mac compatibility
+  - `README.md`: Divided build, Docker, and OpenShift commands into Windows (PowerShell) and Linux/Mac (Bash) sections
+  - `openshift-local-guide.md`: Added PowerShell equivalents for all OpenShift CLI commands
+  - `cloud-deployment.md`: Separated AWS EKS deployment commands by operating system
+  - `api-testing.md`: Added PowerShell cURL commands and monitoring examples
 - **SpringDoc OpenAPI**: Updated from incompatible version 2.1.0 to 1.6.9 for Spring Boot 2.7.x compatibility
 - **Hazelcast Configuration**: Fixed XML configuration for proper multicast discovery in development
 - **Logging Configuration**: Corrected JSON pattern escaping in `logback-spring.xml`

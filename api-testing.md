@@ -24,25 +24,53 @@
 
 ## Using cURL
 
+
 ### Create User
+#### Per Linux/Mac (Bash)
 ```bash
 curl -X POST http://localhost:8080/user \
   -H "Content-Type: application/json" \
   -d '{"name": "Mario Rossi"}'
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+curl -X POST http://localhost:8080/user -H "Content-Type: application/json" -d '{"name": "Mario Rossi"}'
+```
+
+
 ### Get User
+#### Per Linux/Mac (Bash)
 ```bash
 curl http://localhost:8080/user/1
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+curl http://localhost:8080/user/1
+```
+
+
 ### Health Check
+#### Per Linux/Mac (Bash)
 ```bash
 curl http://localhost:8080/actuator/health
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+curl http://localhost:8080/actuator/health
+```
+
+
 ### Prometheus Metrics
+#### Per Linux/Mac (Bash)
 ```bash
+curl http://localhost:8080/actuator/prometheus
+```
+
+#### Per Windows (PowerShell)
+```powershell
 curl http://localhost:8080/actuator/prometheus
 ```
 
@@ -119,6 +147,7 @@ ab -n 1000 -c 10 http://localhost:8080/user/1
 
 ## Performance Benchmarks
 
+
 ### Expected Performance
 - **Response Time**: < 50ms for cached requests
 - **Throughput**: 500+ req/sec per pod
@@ -126,10 +155,17 @@ ab -n 1000 -c 10 http://localhost:8080/user/1
 - **Memory Usage**: < 512MB per pod
 
 ### Monitoring During Load Test
+#### Per Linux/Mac (Bash)
 ```bash
 # Watch metrics during test
 watch -n 1 'curl -s http://localhost:8080/actuator/metrics/http.server.requests | jq .measurements[0]'
 
 # Monitor cache performance
 curl http://localhost:8080/actuator/prometheus | grep hazelcast
+```
+
+#### Per Windows (PowerShell)
+```powershell
+# Monitor cache performance
+(Invoke-WebRequest -Uri http://localhost:8080/actuator/prometheus).Content | Select-String 'hazelcast'
 ```

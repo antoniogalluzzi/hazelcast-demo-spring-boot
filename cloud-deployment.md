@@ -3,6 +3,8 @@
 ## Amazon EKS
 
 ### Prerequisites
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Install AWS CLI and EKS CLI
 aws configure
@@ -10,6 +12,16 @@ aws eks update-kubeconfig --region us-east-1 --name hazelcast-cluster
 
 # Install Helm
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+
+#### Per Windows (PowerShell)
+```powershell
+# Install AWS CLI and EKS CLI
+aws configure
+aws eks update-kubeconfig --region us-east-1 --name hazelcast-cluster
+
+# Install Helm
+irm https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | iex
 ```
 
 ### Deploy PostgreSQL
@@ -27,6 +39,8 @@ helm install postgresql bitnami/postgresql \
 ```
 
 ### Deploy Application
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Create namespace
 kubectl create namespace hazelcast-demo
@@ -43,7 +57,26 @@ kubectl create secret generic db-secret \
 kubectl apply -f deployment.yaml -n hazelcast-demo
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+# Create namespace
+kubectl create namespace hazelcast-demo
+
+# Create secret
+kubectl create secret generic db-secret `
+  --from-literal=host=postgresql.default.svc.cluster.local `
+  --from-literal=dbname=hazelcastdb `
+  --from-literal=username=postgres `
+  --from-literal=password=yourpassword `
+  -n hazelcast-demo
+
+# Deploy application
+kubectl apply -f deployment.yaml -n hazelcast-demo
+```
+
 ### Setup Monitoring
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Install Prometheus Operator
 helm install prometheus prometheus-community/kube-prometheus-stack
@@ -53,6 +86,18 @@ helm install grafana stable/grafana
 
 # Get Grafana admin password
 kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+#### Per Windows (PowerShell)
+```powershell
+# Install Prometheus Operator
+helm install prometheus prometheus-community/kube-prometheus-stack
+
+# Install Grafana
+helm install grafana stable/grafana
+
+# Get Grafana admin password
+(kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}") | %{ [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
 ```
 
 ## Google GKE

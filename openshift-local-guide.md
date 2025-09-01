@@ -3,6 +3,8 @@
 ## 🚀 Quick Start
 
 ### 1. Setup Environment
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Install OpenShift Local
 crc setup
@@ -15,7 +17,23 @@ oc login -u kubeadmin -p $(crc console --credentials | grep Password | awk '{pri
 oc new-project hazelcast-demo-dev
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+# Install OpenShift Local
+crc setup
+crc start
+
+# Login to cluster (PowerShell)
+$password = (& crc console --credentials | Select-String 'Password' | ForEach-Object { $_.ToString().Split()[1] })
+oc login -u kubeadmin -p $password https://api.crc.testing:6443
+
+# Create project
+oc new-project hazelcast-demo-dev
+```
+
 ### 2. Deploy Database
+
+#### Per Linux/Mac (Bash)
 ```bash
 # One-command PostgreSQL deployment
 oc new-app postgresql-ephemeral \
@@ -26,7 +44,20 @@ oc new-app postgresql-ephemeral \
   --param POSTGRESQL_VERSION=13
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+# One-command PostgreSQL deployment
+oc new-app postgresql-ephemeral `
+  --param DATABASE_SERVICE_NAME=postgresql `
+  --param POSTGRESQL_DATABASE=hazelcastdb `
+  --param POSTGRESQL_USER=hazelcast `
+  --param POSTGRESQL_PASSWORD=hazelcast123 `
+  --param POSTGRESQL_VERSION=13
+```
+
 ### 3. Deploy Application
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Build and deploy in one go
 oc new-build --name=hazelcast-demo --binary --image-stream=java:openjdk-21-ubi8:latest
@@ -42,12 +73,39 @@ oc new-app hazelcast-demo:latest \
 oc scale deployment hazelcast-demo --replicas=2
 ```
 
+#### Per Windows (PowerShell)
+```powershell
+# Build and deploy in one go
+oc new-build --name=hazelcast-demo --binary --image-stream=java:openjdk-21-ubi8:latest
+oc start-build hazelcast-demo --from-dir=. --follow
+
+oc new-app hazelcast-demo:latest `
+  --name=hazelcast-demo `
+  --env=DB_HOST=postgresql.hazelcast-demo-dev.svc.cluster.local `
+  --env=DB_NAME=hazelcastdb `
+  --env=DB_USERNAME=hazelcast `
+  --env=DB_PASSWORD=hazelcast123
+
+oc scale deployment hazelcast-demo --replicas=2
+```
+
 ### 4. Test
+
+#### Per Linux/Mac (Bash)
 ```bash
 # Get application URL
 oc get routes
 
 # Test API
+curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/user/1
+```
+
+#### Per Windows (PowerShell)
+```powershell
+# Get application URL
+oc get routes
+
+# Test API (PowerShell)
 curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/user/1
 ```
 
@@ -61,6 +119,7 @@ curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/user/1
 
 ### Installation Steps
 
+
 #### Windows
 ```powershell
 # Download CRC from Red Hat console
@@ -72,6 +131,7 @@ crc start --cpus 6 --memory 16384
 crc oc-env | Invoke-Expression
 ```
 
+
 #### macOS
 ```bash
 # Download and install CRC
@@ -81,6 +141,7 @@ crc start --cpus 6 --memory 16384
 # Add to PATH
 eval $(crc oc-env)
 ```
+
 
 #### Linux
 ```bash

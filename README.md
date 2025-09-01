@@ -82,13 +82,18 @@ spring:
       enabled: true
 ```
 
+
 ### Avvio in Modalità Sviluppo
 
+#### Per Linux/Mac (Bash)
 ```bash
 # Avvia l'applicazione con profilo dev (H2)
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
-# Oppure con Maven
+#### Per Windows (PowerShell)
+```powershell
+# Avvia l'applicazione con profilo dev (H2)
 ./maven/bin/mvn.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"
 ```
 
@@ -130,23 +135,34 @@ Quando si passa alla produzione, il profilo cambia automaticamente a PostgreSQL:
 - **Staging**: PostgreSQL containerizzato (profilo `staging`)
 - **Prod**: PostgreSQL su OpenShift (profilo `prod`)
 
+
 ## Build
 
+#### Per Linux/Mac (Bash)
 ```bash
 mvn clean package -DskipTests
 ```
+
+#### Per Windows (PowerShell)
+```powershell
+mvnw.cmd clean package -DskipTests
+```
+
 
 ## Docker
 
 Costruisci l'immagine Docker:
 
+#### Per Linux/Mac (Bash)
 ```bash
 docker build -t hazelcast-demo .
+docker tag hazelcast-demo <registry>/hazelcast-demo:latest
+docker push <registry>/hazelcast-demo:latest
 ```
 
-Push su registry (es. OpenShift registry o ECR):
-
-```bash
+#### Per Windows (PowerShell)
+```powershell
+docker build -t hazelcast-demo .
 docker tag hazelcast-demo <registry>/hazelcast-demo:latest
 docker push <registry>/hazelcast-demo:latest
 ```
@@ -155,9 +171,10 @@ docker push <registry>/hazelcast-demo:latest
 
 OpenShift Local (precedentemente CodeReady Containers) permette di testare l'applicazione localmente prima del deploy in produzione.
 
+
 ### Setup Automatico (Raccomandato)
 
-#### Linux/macOS
+#### Per Linux/Mac (Bash)
 ```bash
 # Rendi eseguibile e avvia setup
 chmod +x setup-openshift-local.sh
@@ -166,32 +183,33 @@ chmod +x setup-openshift-local.sh
 ./setup-openshift-local.sh test     # Test applicazione
 ```
 
-#### Windows
+#### Per Windows (PowerShell)
 ```powershell
 # Esegui setup PowerShell
-.\setup-openshift-local.ps1 -Command start    # Avvia CRC e configura
-.\setup-openshift-local.ps1 -Command deploy   # Deploy database e app
-.\setup-openshift-local.ps1 -Command test     # Test applicazione
+./setup-openshift-local.ps1 -Command start    # Avvia CRC e configura
+./setup-openshift-local.ps1 -Command deploy   # Deploy database e app
+./setup-openshift-local.ps1 -Command test     # Test applicazione
 ```
+
 
 ### Setup Manuale
 
-#### Comandi Script Disponibili
-
+#### Per Linux/Mac (Bash)
 ```bash
-# Linux/macOS
 ./setup-openshift-local.sh start     # Avvia CRC e configura ambiente
 ./setup-openshift-local.sh deploy    # Deploy completo (DB + App)
 ./setup-openshift-local.sh test      # Test automatici dell'applicazione
 ./setup-openshift-local.sh info      # Mostra info applicazione
 ./setup-openshift-local.sh cleanup   # Pulizia completa
+```
 
-# Windows PowerShell
-.\setup-openshift-local.ps1 -Command start
-.\setup-openshift-local.ps1 -Command deploy
-.\setup-openshift-local.ps1 -Command test
-.\setup-openshift-local.ps1 -Command info
-.\setup-openshift-local.ps1 -Command cleanup
+#### Per Windows (PowerShell)
+```powershell
+./setup-openshift-local.ps1 -Command start
+./setup-openshift-local.ps1 -Command deploy
+./setup-openshift-local.ps1 -Command test
+./setup-openshift-local.ps1 -Command info
+./setup-openshift-local.ps1 -Command cleanup
 ```
 
 ## 🧪 Test e Validazione
