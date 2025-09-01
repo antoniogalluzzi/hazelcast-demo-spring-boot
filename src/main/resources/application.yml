@@ -1,0 +1,30 @@
+# Base Application Configuration
+# Common settings for all environments
+
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: hazelcast-demo
+  
+  cache:
+    type: hazelcast
+    
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: always
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId}] %logger{36} - %msg%n"

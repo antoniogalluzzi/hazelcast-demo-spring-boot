@@ -4,20 +4,56 @@
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
            http://www.hazelcast.com/schema/config/hazelcast-config-5.0.xsd">
 
+    <cluster-name>hazelcast-demo-cluster</cluster-name>
+    <instance-name>hazelcast-demo-instance</instance-name>
+
     <network>
-        <port auto-increment="true">5701</port>
+        <port auto-increment="true" port-count="100">5701</port>
+        <outbound-ports>
+            <ports>0</ports>
+        </outbound-ports>
         <join>
-            <kubernetes enabled="true">
-                <namespace>hazelcast-demo-dev</namespace>
-                <service-name>hazelcast-demo</service-name>
-                <service-port>5701</service-port>
-            </kubernetes>
+            <!-- Default: auto-discovery disabled -->
+            <!-- Specific discovery methods are configured per environment -->
+            <auto-detection enabled="false"/>
+            <multicast enabled="false"/>
+            <tcp-ip enabled="false"/>
+            <kubernetes enabled="false"/>
         </join>
+        <interfaces enabled="false">
+            <interface>10.10.1.*</interface>
+        </interfaces>
     </network>
 
+    <!-- Cache configuration -->
     <cache name="users">
         <key-type class-name="java.lang.Long"/>
         <value-type class-name="com.example.hazelcastdemo.User"/>
+        <statistics-enabled>true</statistics-enabled>
+        <management-enabled>true</management-enabled>
+        <expiry-policy-factory>
+            <timed-expiry-policy-factory expiry-policy-type="CREATED" 
+                                        duration-amount="600"
+                                        time-unit="SECONDS"/>
+        </expiry-policy-factory>
     </cache>
+
+    <!-- Map configuration for Hazelcast native maps -->
+    <map name="users-map">
+        <time-to-live-seconds>600</time-to-live-seconds>
+        <max-idle-seconds>300</max-idle-seconds>
+        <eviction size="10000" max-size-policy="PER_NODE" eviction-policy="LRU"/>
+        <statistics-enabled>true</statistics-enabled>
+    </map>
+
+    <!-- Management Center -->
+    <management-center scripting-enabled="true"/>
+
+    <!-- Logging -->
+    <properties>
+        <property name="hazelcast.logging.type">slf4j</property>
+        <property name="hazelcast.shutdownhook.enabled">false</property>
+        <property name="hazelcast.wait.seconds.before.join">5</property>
+    </properties>
 
 </hazelcast>

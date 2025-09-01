@@ -115,11 +115,11 @@ function Deploy-Database {
 
     # Deploy PostgreSQL
     oc new-app postgresql-ephemeral `
-        --param DATABASE_SERVICE_NAME=$DB_NAME `
-        --param POSTGRESQL_DATABASE=hazelcastdb `
-        --param POSTGRESQL_USER=$DB_USER `
-        --param POSTGRESQL_PASSWORD=$DB_PASSWORD `
-        --param POSTGRESQL_VERSION=13
+        --param "DATABASE_SERVICE_NAME=$DB_NAME" `
+        --param "POSTGRESQL_DATABASE=hazelcastdb" `
+        --param "POSTGRESQL_USER=$DB_USER" `
+        --param "POSTGRESQL_PASSWORD=$DB_PASSWORD" `
+        --param "POSTGRESQL_VERSION=13"
 
     Write-Info "Waiting for PostgreSQL to be ready..."
     oc wait --for=condition=ready pod -l app=$DB_NAME --timeout=300s
@@ -162,12 +162,12 @@ function Deploy-Application {
 
     # Deploy application
     Write-Info "Deploying application..."
-    oc new-app $APP_NAME`:latest` `
-        --name=$APP_NAME `
-        --env=DB_HOST=$DB_NAME.$PROJECT_NAME.svc.cluster.local `
-        --env=DB_NAME=hazelcastdb `
-        --env=DB_USERNAME=$DB_USER `
-        --env=DB_PASSWORD=$DB_PASSWORD
+    oc new-app "$APP_NAME`:latest" `
+        --name="$APP_NAME" `
+        --env="DB_HOST=$DB_NAME.$PROJECT_NAME.svc.cluster.local" `
+        --env="DB_NAME=hazelcastdb" `
+        --env="DB_USERNAME=$DB_USER" `
+        --env="DB_PASSWORD=$DB_PASSWORD"
 
     # Wait for deployment
     Write-Info "Waiting for application to be ready..."

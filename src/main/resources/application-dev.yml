@@ -16,13 +16,6 @@ spring:
     console:
       enabled: true
 
-hazelcast:
-  config: classpath:hazelcast.xml
-  network:
-    join:
-      multicast:
-        enabled: true
-
 logging:
   level:
     '[com.example]': DEBUG

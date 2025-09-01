@@ -2,11 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hazelcast-demo
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
   labels:
     app: hazelcast-demo
+    version: v1.1.0
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: hazelcast-demo
@@ -14,27 +15,45 @@ spec:
     metadata:
       labels:
         app: hazelcast-demo
-        logging: "true"
+        version: v1.1.0
     spec:
       serviceAccountName: hazelcast-service-account
       containers:
       - name: hazelcast-demo
-        image: <your-registry>/hazelcast-demo:latest
+        image: hazelcast-demo:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
+          name: http
+        - containerPort: 5701
+          name: hazelcast
         readinessProbe:
           httpGet:
-            path: /actuator/health
+            path: /actuator/health/readiness
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /actuator/health
+            path: /actuator/health/liveness
             port: 8080
           initialDelaySeconds: 60
           periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 12
         env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "openshift-local"
         - name: SERVER_PORT
           value: "8080"
         - name: KUBERNETES_NAMESPACE
@@ -46,27 +65,17 @@ spec:
             fieldRef:
               fieldPath: metadata.name
         - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: host
+          value: "postgresql"
         - name: DB_PORT
           value: "5432"
         - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: dbname
+          value: "hazelcastdb"
         - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: username
+          value: "hazelcast"
         - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: password
+          value: "hazelcast123"
+        - name: HAZELCAST_SERVICE_NAME
+          value: "hazelcast-demo-service"
         resources:
           requests:
             memory: "512Mi"
@@ -74,45 +83,60 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1001
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: hazelcast-demo-service
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
+  labels:
+    app: hazelcast-demo
 spec:
   selector:
     app: hazelcast-demo
   ports:
   - port: 8080
     targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 5701
+    targetPort: 5701
+    protocol: TCP
+    name: hazelcast
   type: ClusterIP
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: hazelcast-service-account
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: hazelcast-role
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
 rules:
 - apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "list"]
+  resources: ["pods", "endpoints", "services"]
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: hazelcast-role-binding
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
 subjects:
 - kind: ServiceAccount
   name: hazelcast-service-account
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
 roleRef:
   kind: Role
   name: hazelcast-role
@@ -122,10 +146,17 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: hazelcast-demo-route
-  namespace: contactcenter-dev
+  namespace: hazelcast-demo-dev
+  labels:
+    app: hazelcast-demo
 spec:
   to:
     kind: Service
     name: hazelcast-demo-service
+    weight: 100
   port:
-    targetPort: 8080
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

@@ -1,0 +1,97 @@
+# Application Configuration - Cloud Environment (AWS/Azure/GCP)
+# Profile: cloud
+# Usage: java -jar app.jar --spring.profiles.active=cloud
+
+spring:
+  datasource:
+    # Cloud database configurations
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 25
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+        connection:
+          provider_disables_autocommit: true
+
+hazelcast:
+  config: classpath:hazelcast.xml
+  network:
+    join:
+      kubernetes:
+        enabled: true
+        namespace: ${KUBERNETES_NAMESPACE:default}
+        service-name: ${HAZELCAST_SERVICE_NAME:hazelcast-demo-service}
+        service-port: 5701
+        service-dns: ${HAZELCAST_SERVICE_DNS}
+        use-node-name-as-external-address: false
+        resolve-not-ready-addresses: true
+      multicast:
+        enabled: false
+      tcp-ip:
+        enabled: false
+
+# Security configurations
+server:
+  port: 8080
+  shutdown: graceful
+  error:
+    include-stacktrace: never
+    include-message: never
+
+spring.lifecycle:
+  timeout-per-shutdown-phase: 30s
+
+# Logging for production
+logging:
+  level:
+    '[com.example]': INFO
+    '[org.springframework]': WARN
+    '[com.hazelcast]': INFO
+    '[org.hibernate]': WARN
+    root: WARN
+  pattern:
+    console: "%d{ISO8601} [%thread] %-5level [%X{traceId},%X{spanId}] %logger{36} - %msg%n"
+
+# Actuator endpoints - restricted for production
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+# Cloud-specific optimizations
+spring.jpa.open-in-view: false
+spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch: true
+spring.jpa.properties.hibernate.query.in_clause_parameter_padding: true

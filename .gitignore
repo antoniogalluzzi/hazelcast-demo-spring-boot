@@ -1,16 +1,7 @@
-# Compiled class file
+# Compiled Java classes
 *.class
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package Files
 *.jar
 *.war
 *.nar
@@ -19,29 +10,48 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Logs
+*.log
+logs/
+
+# Java crash logs
 hs_err_pid*
 replay_pid*
 
-# Eclipse
+# IDE - Eclipse
 .project
 .classpath
 .settings/
+.metadata
 
-# IntelliJ IDEA
+# IDE - IntelliJ IDEA
 .idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-# NetBeans
+# IDE - NetBeans
 nbproject/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# Visual Studio Code
-.vscode/
+# IDE - Visual Studio Code
+# Keep useful configurations but exclude user-specific files
+.vscode/launch.json
+.vscode/settings.json
+.vscode/*.code-snippets
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
 # Maven
@@ -58,18 +68,54 @@ buildNumber.properties
 
 # Spring Boot
 *.original
+.factorypath
 
-# Hazelcast
-hazelcast-*.xml
-
-# Database
+# Database files (H2 in-memory database)
 *.db
 *.h2.db
+*.mv.db
+*.trace.db
+testdb.*
 
-# Logs
-logs/
-*.log
+# Hazelcast cache files
+*.dat
+*.cache
 
-# Temporary files
+# Application logs
+application*.log
+spring*.log
+
+# Temporary files and backups  
 *.tmp
 *.bak
+*.swp
+*.swo
+*~
+
+# Project-specific temporary files
+*-validation.md
+*-analysis.md
+*-backup.*
+
+# Conflicting configuration files
+application.properties
+
+# Maven embedded distribution
+maven/
+maven.zip
+
+# Standalone JAR files (dependencies managed by Maven)
+h2.jar
+hazelcast-*.jar
+
+# Node modules (if using frontend tools)
+node_modules/
+npm-debug.log*
+
+# Docker
+.dockerignore
+
+# Environment files
+.env
+.env.local
+.env.*.local

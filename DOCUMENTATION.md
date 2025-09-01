@@ -5,8 +5,8 @@
 **👤 Autore**: Antonio Galluzzi  
 **📧 Email**: antonio.galluzzi91@gmail.com  
 **🐙 GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)  
-**📅 Ultimo aggiornamento**: 1 Settembre 2025  
-**📖 Versione**: 2.0.0
+**📅 Ultimo aggiornamento**: 2 Settembre 2025  
+**📖 Versione**: 2.1.0
 
 ---
 
@@ -139,8 +139,8 @@ graph TB
 ```
 
 **🔧 Dipendenze Chiave:**
-- **Spring Boot**: 2.7.18 (Framework principale)
-- **Hazelcast**: 5.1.7 (Cache distribuita)
+- **Spring Boot**: 3.2.0 (Framework principale)
+- **Hazelcast**: 5.1+ (Cache distribuita)
 - **PostgreSQL**: 13+ (Database produzione)
 - **H2**: 2.1+ (Database sviluppo)
 - **Micrometer**: Metriche e monitoring
@@ -150,13 +150,65 @@ graph TB
 #### 🎯 Application Layer
 - **HazelcastDemoApplication**: Main class
 - **User Entity**: Modello dati JPA
-- **UserController**: REST endpoints
-- **CacheController**: Cache management
+- **CacheController**: REST endpoints + Cache management
+- **UserService**: Business logic con cache
 
 #### 💾 Data Layer  
 - **PostgreSQL**: Persistenza produzione
 - **H2**: Database in-memory per dev
 - **Hazelcast**: Cache L2 distribuita
+
+### Struttura Progetto
+
+Il progetto è stato **ottimizzato e pulito** per massima chiarezza:
+
+```
+📁 hazelcast-demo-spring-boot/
+├── 📋 README.md                    # Quick start e overview
+├── 📚 DOCUMENTATION.md             # Documentazione completa (questo file)
+├── 📝 CHANGELOG.md                 # Cronologia modifiche e releases  
+├── ⚖️ LICENSE                      # Licenza Apache 2.0
+├── ⚙️ pom.xml                      # Configurazione Maven e dipendenze
+├── 🔧 mvnw / mvnw.cmd             # Maven Wrapper (Windows/Linux)
+├── 🚀 start-local-dev.ps1         # Script avvio sviluppo (Windows)
+├── 🏗️ setup-openshift-local.ps1   # Setup OpenShift Local (Windows)
+├── 🐳 Dockerfile                   # Container image per deploy
+├── ☸️ deployment.yaml             # Kubernetes/OpenShift deployment
+├── 🚫 .gitignore                  # Git ignore rules ottimizzate
+├── 📁 .mvn/                       # Maven wrapper configuration
+├── 🖥️ .vscode/                   # VS Code tasks e settings
+│   ├── tasks.json                 # Task Maven (compile, test, run)
+│   └── settings.json              # Java settings (null analysis)
+└── 📁 src/main/
+    ├── ☕ java/com/example/hazelcastdemo/
+    │   ├── HazelcastDemoApplication.java    # Main Spring Boot
+    │   ├── User.java                        # JPA Entity
+    │   ├── UserRepository.java              # Data access layer
+    │   ├── UserService.java                 # Business logic + cache
+    │   ├── CacheController.java             # REST API endpoints
+    │   ├── LoggingContext.java              # Request tracing
+    │   ├── OpenApiConfig.java               # Swagger documentation
+    │   └── config/
+    │       └── HazelcastDevConfig.java      # Hazelcast config per dev
+    └── ⚙️ resources/
+        ├── application.yml                  # Configurazioni base comuni
+        ├── application-dev.yml              # Dev locale (H2 + multicast)
+        ├── application-staging.yml          # Staging (PostgreSQL + TCP/IP)
+        ├── application-openshift-local.yml  # OpenShift Local (PostgreSQL + K8s)
+        ├── application-cloud.yml            # Cloud deployment (PostgreSQL + TCP/IP)
+        ├── application-prod.yml             # Produzione (PostgreSQL + TCP/IP)
+        ├── hazelcast.xml                    # Hazelcast XML base (discovery disabilitato)
+        └── logback-spring.xml               # Logging configuration
+```
+
+#### 🧹 **Pulizia Effettuata**
+
+**File Rimossi** (riduzione 67%):
+- ❌ Script duplicati Linux (`*.sh`) - Focus Windows  
+- ❌ File di test temporanei (`quick-test-commands.sh`)
+- ❌ Archivi backup (`*.zip`, `maven/`, `h2.jar`) 
+- ❌ Configurazioni conflittuali (`application.properties`)
+- ❌ File temporanei (`.github/`, `target/`, `testdb.*`)
 
 #### 📊 Monitoring Layer
 - **Actuator**: Health, metrics, info
@@ -189,7 +241,7 @@ hazelcast:
 
 ### Profili Ambiente
 
-Il progetto supporta 4 profili principali:
+Il progetto supporta **5 profili specializzati** per diversi ambienti di deployment:
 
 #### 🔧 Development (`dev`)
 ```yaml
@@ -198,11 +250,13 @@ spring:
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
   h2.console.enabled: true
   jpa.hibernate.ddl-auto: create-drop
 
-hazelcast:
-  network.join.multicast.enabled: true
+# Configurazione Hazelcast via Java (@ConditionalOnProperty)
+# HazelcastDevConfig.java con multicast discovery
 ```
 
 #### 🧪 Staging (`staging`)  
@@ -210,13 +264,47 @@ hazelcast:
 # application-staging.yml
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/hazelcast_demo
-    username: ${DB_USER:demo_user}
-    password: ${DB_PASSWORD:demo_pass}
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:hazelcastdb}
+    username: ${DB_USERNAME:staging_user}
+    password: ${DB_PASSWORD:staging_pass}
+  jpa.hibernate.ddl-auto: update
 
 hazelcast:
+  config: classpath:hazelcast.xml
   network.join.tcp-ip.enabled: true
-  network.join.tcp-ip.members: staging-node-1,staging-node-2
+  network.join.tcp-ip.interface: ${HAZELCAST_INTERFACE:127.0.0.1}
+```
+
+#### 🏗️ OpenShift Local (`openshift-local`)
+```yaml
+# application-openshift-local.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgresql.hazelcast-demo-dev.svc.cluster.local}:5432/${DB_NAME:hazelcastdb}
+    username: ${DB_USERNAME:hazelcast}
+    password: ${DB_PASSWORD:hazelcast123}
+
+hazelcast:
+  config: classpath:hazelcast.xml
+  network.join.kubernetes.enabled: true
+  network.join.kubernetes.namespace: ${KUBERNETES_NAMESPACE:hazelcast-demo-dev}
+  network.join.kubernetes.service-name: ${HAZELCAST_SERVICE_NAME:hazelcast-demo-service}
+```
+
+#### ☁️ Cloud (`cloud`)
+```yaml
+# application-cloud.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa.hibernate.ddl-auto: validate
+
+hazelcast:
+  config: classpath:hazelcast.xml
+  network.join.tcp-ip.enabled: true
+  network.join.tcp-ip.members: ${HAZELCAST_MEMBERS}
 ```
 
 #### 🚀 Production (`prod`)
@@ -224,14 +312,18 @@ hazelcast:
 # application-prod.yml
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/hazelcast_demo
-    username: ${DB_USER}
+    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
+    username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
   jpa.hibernate.ddl-auto: validate
 
 hazelcast:
-  network.join.kubernetes.enabled: true
-  network.join.kubernetes.service-name: hazelcast-service
+  config: classpath:hazelcast.xml
+  network.join.tcp-ip.enabled: true
+  network.join.tcp-ip.members: ${HAZELCAST_MEMBERS}
 ```
 
 ### Database Setup
@@ -260,33 +352,86 @@ CREATE TABLE users (
 
 ### Hazelcast Config
 
-#### Cluster Discovery
+#### Configurazione Ibrida (Java + XML)
+
+**Per ambiente DEV** - Configurazione Java programmatica:
 ```java
 @Configuration
-public class HazelcastConfig {
+@ConditionalOnProperty(name = "spring.profiles.active", havingValue = "dev")
+public class HazelcastDevConfig {
+    
+    private static final String CLUSTER_NAME = "hazelcast-demo-dev-cluster";
+    private static final String INSTANCE_NAME = "hazelcast-demo-dev-instance";
+    private static final String MULTICAST_GROUP = "224.2.2.3";
+    private static final int MULTICAST_PORT = 54327;
     
     @Bean
     public Config hazelcastConfig() {
         Config config = new Config();
-        config.setClusterName("hazelcast-demo-cluster");
+        config.setClusterName(CLUSTER_NAME);
+        config.setInstanceName(INSTANCE_NAME);
         
-        // Network configuration
-        NetworkConfig network = config.getNetworkConfig();
-        
-        // Multicast per sviluppo
-        if (isDevProfile()) {
-            network.getJoin().getMulticastConfig().setEnabled(true);
-        }
-        
-        // Kubernetes per produzione
-        if (isProdProfile()) {
-            network.getJoin().getKubernetesConfig().setEnabled(true);
-        }
+        configureNetwork(config);
+        configureDiscovery(config);
+        configureProperties(config);
         
         return config;
     }
+    
+    private void configureNetwork(Config config) {
+        NetworkConfig network = config.getNetworkConfig();
+        network.setPort(5701).setPortAutoIncrement(true).setPortCount(100);
+    }
+    
+    private void configureDiscovery(Config config) {
+        JoinConfig join = config.getNetworkConfig().getJoin();
+        join.getAutoDetectionConfig().setEnabled(false);
+        join.getMulticastConfig()
+            .setEnabled(true)
+            .setMulticastGroup(MULTICAST_GROUP)
+            .setMulticastPort(MULTICAST_PORT);
+        join.getTcpIpConfig().setEnabled(false);
+        join.getKubernetesConfig().setEnabled(false);
+    }
+    
+    private void configureProperties(Config config) {
+        config.setProperty("hazelcast.logging.type", "slf4j");
+        config.setProperty("hazelcast.shutdownhook.enabled", "false");
+    }
 }
 ```
+
+**Per altri ambienti** - Configurazione XML:
+```xml
+<!-- hazelcast.xml -->
+<hazelcast xmlns="http://www.hazelcast.com/schema/config">
+    <cluster-name>hazelcast-demo-cluster</cluster-name>
+    <instance-name>hazelcast-demo-instance</instance-name>
+    
+    <network>
+        <port auto-increment="true" port-count="100">5701</port>
+        <join>
+            <!-- Default: discovery disabilitato per sicurezza -->
+            <auto-detection enabled="false"/>
+            <multicast enabled="false"/>
+            <tcp-ip enabled="false"/>
+            <kubernetes enabled="false"/>
+        </join>
+    </network>
+    
+    <!-- Override specifici per ambiente via application-{profile}.yml -->
+</hazelcast>
+```
+
+#### Strategia Discovery per Ambiente
+
+| Ambiente | Discovery Method | Configurazione |
+|----------|------------------|----------------|
+| **dev** | Multicast | Java Config (`HazelcastDevConfig.java`) |
+| **staging** | TCP/IP | XML + YAML override |
+| **openshift-local** | Kubernetes | XML + YAML override |
+| **cloud** | TCP/IP | XML + YAML override |
+| **prod** | TCP/IP | XML + YAML override |
 
 ---
 

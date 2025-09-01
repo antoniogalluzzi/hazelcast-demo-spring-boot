@@ -3,8 +3,8 @@
 > **Demo completo** di Spring Boot + Hazelcast + PostgreSQL per cache distribuita enterprise
 
 [![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7.18-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![Hazelcast](https://img.shields.io/badge/Hazelcast-5.1.7-blue.svg)](https://hazelcast.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Hazelcast](https://img.shields.io/badge/Hazelcast-5.1+-blue.svg)](https://hazelcast.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-red.svg)](LICENSE)
 
 ## ⚡ Quick Start (30 secondi)

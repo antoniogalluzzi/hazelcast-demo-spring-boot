@@ -1,0 +1,64 @@
+# Application Configuration - OpenShift Local Environment
+# Profile: openshift-local
+# Usage: java -jar app.jar --spring.profiles.active=openshift-local
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgresql.hazelcast-demo-dev.svc.cluster.local}:5432/${DB_NAME:hazelcastdb}
+    username: ${DB_USERNAME:hazelcast}
+    password: ${DB_PASSWORD:hazelcast123}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+
+hazelcast:
+  config: classpath:hazelcast.xml
+  network:
+    join:
+      kubernetes:
+        enabled: true
+        namespace: ${KUBERNETES_NAMESPACE:hazelcast-demo-dev}
+        service-name: ${HAZELCAST_SERVICE_NAME:hazelcast-demo-service}
+        service-port: 5701
+      multicast:
+        enabled: false
+      tcp-ip:
+        enabled: false
+
+logging:
+  level:
+    '[com.example]': INFO
+    '[org.springframework.cache]': DEBUG
+    '[com.hazelcast]': INFO
+    '[org.hibernate.SQL]': DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{traceId}] %logger{36} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,configprops
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+
+# OpenShift Local specific settings
+server:
+  port: 8080
+  shutdown: graceful
+
+spring.lifecycle:
+  timeout-per-shutdown-phase: 30s

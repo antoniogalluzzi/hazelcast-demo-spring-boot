@@ -5,6 +5,77 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- **Configurazione Multi-Ambiente Completa**: Sistema completo di configurazioni per ogni ambiente
+  - `application.yml` - Configurazioni base comuni
+  - `application-dev.yml` - Sviluppo locale (H2 + multicast)
+  - `application-staging.yml` - Staging (PostgreSQL + TCP/IP)
+  - `application-openshift-local.yml` - OpenShift Local (PostgreSQL + Kubernetes discovery)
+  - `application-cloud.yml` - Cloud deployment (PostgreSQL + TCP/IP)
+  - `application-prod.yml` - Produzione (PostgreSQL + TCP/IP)
+
+- **Configurazione Hazelcast Java-based**: Migrazione da XML a configurazione Java per l'ambiente dev
+  - `HazelcastDevConfig.java` - Configurazione programmatica per sviluppo
+  - Multicast discovery per l'ambiente locale
+  - Conditional activation basata su profile Spring
+  - Code più maintainabile e type-safe
+
+- **VS Code Integration Avanzata**: Configurazioni ottimizzate per lo sviluppo
+  - Task Maven Wrapper configurati (`compile`, `clean compile`, `test`, `start dev`)
+  - Settings Java ottimizzati per null analysis
+  - Problem matcher configurati per errori di compilazione
+
+- **Script PowerShell Professionali**: Automazione completa per Windows
+  - `start-local-dev.ps1` - Avvio sviluppo con opzioni (clean, test, debug)
+  - `setup-openshift-local.ps1` - Setup completo OpenShift Local
+  - Gestione errori avanzata e output colorato
+  - Supporto modalità debug (porta 5005)
+
+### Changed
+- **Struttura Progetto Drasticamente Semplificata**: Pulizia completa file inutili
+  - **-67% file nella root** - Da 15+ a 5 file essenziali
+  - **Zero duplicati** - Rimossi script Linux ridondanti
+  - **Zero conflitti configurazione** - Sostituito `application.properties` con YAML
+  - **Build pulito** - Rimossi archivi Maven embedded e JAR standalone
+
+- **Configurazioni Unificate**: Migrazione completa a YAML per consistenza
+  - Eliminato `application.properties` che causava conflitti
+  - Configurazioni base in `application.yml`
+  - Override specifici per ambiente nei file dedicati
+  - Hazelcast XML generico reso sicuro (discovery disabilitato di default)
+
+- **GitIgnore Intelligente**: Ottimizzazione completa delle regole di esclusione
+  - **VS Code selettivo** - Mantiene configurazioni utili, esclude file user-specific
+  - **Support completo IDE** - Eclipse, IntelliJ, NetBeans, VS Code
+  - **Frontend ready** - Support per `node_modules` e file di ambiente
+  - **Organizzato per categoria** - Facile da leggere e mantenere
+
+### Removed
+- **File Duplicati e Obsoleti**:
+  - ❌ `start-local-dev.sh`, `setup-openshift-local.sh` (duplicati Linux)
+  - ❌ `quick-test-commands.sh` (non necessario per dev locale)
+  - ❌ `.github/copilot-instructions.md` (file setup temporaneo)
+  - ❌ `application.properties` (sostituito da YAML)
+  - ❌ `hazelcast-dev.xml` (sostituito da configurazione Java)
+
+- **Archivi e File Temporanei**:
+  - ❌ `hazelcast-demo.zip`, `maven.zip` (backup inutili)
+  - ❌ `maven/` (cartella Maven embedded)
+  - ❌ `h2.jar` (JAR standalone, gestito da Maven)
+  - ❌ `testdb.mv.db`, `testdb.trace.db` (database temporanei)
+  - ❌ `target/` (output build, si rigenera)
+
+### Fixed
+- **Conflitti di Configurazione**: Risolti conflitti tra file properties e YAML
+- **Build Consistency**: Maven Wrapper utilizzato ovunque invece di Maven locale
+- **Environment Isolation**: Ogni ambiente ha configurazioni dedicate senza overlap
+- **Code Organization**: Configurazione Hazelcast refactoring per chiarezza e maintainability
+
+### Performance
+- **Startup più veloce**: Eliminati conflitti di configurazione
+- **Build ottimizzato**: Rimossi file inutili che rallentavano la compilazione
+- **Cache efficiente**: Configurazione Hazelcast environment-specific
+
+### Documentation
 - **Documentazione Unificata Completa**: Creato DOCUMENTATION.md unico e completo
   - Consolidate tutte le guide in un singolo file navigabile
   - Struttura progressiva: Quick Start → Architettura → Deployment → Testing
@@ -17,19 +88,6 @@ All notable changes to this project will be documented in this file.
   - Demo live con esempi copy-paste
   - Setup rapido per ruolo (Developer/DevOps/Tester)
   - Link diretto alla documentazione completa
-
-### Changed
-- **Struttura Documentazione Drasticamente Semplificata**: Da 11 file a 3 file
-  - ✅ **README.md** - Quick start e overview (era 512 righe, ora 145 righe)
-  - ✅ **DOCUMENTATION.md** - Guida completa unificata (tutto in uno)  
-  - ✅ **CHANGELOG.md** - Registro modifiche
-  - ❌ Rimossi 8 file ridondanti (api-testing.md, cloud-deployment.md, etc.)
-
-### Fixed
-- **Eliminata Frammentazione**: Non più ricerca attraverso file multipli
-- **Navigazione Semplificata**: Tutto accessibile da README → DOCUMENTATION
-- **Manutenzione Ridotta**: Un solo file da aggiornare per guide tecniche
-- **User Experience**: Percorso lineare e intuitivo per ogni tipo di utente
 
 - **Configurazione DNS per OpenShift Local**: Sezione completa aggiunta alla guida deployment
   - Guida passo-passo per configurazione file hosts
