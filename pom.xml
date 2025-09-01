@@ -14,7 +14,7 @@
 	<name>hazelcast-demo</name>
 	<description>Demo project for Spring Boot with Hazelcast</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 
 	<developers>

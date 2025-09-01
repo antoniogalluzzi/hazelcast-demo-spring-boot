@@ -1,62 +1,109 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in## [Unreleased]
+
+### Added
+- **Configurazione DNS per OpenShift Local**: Sezione completa aggiunta alla guida deployment
+  - Guida passo-passo per configurazione file hosts
+  - Troubleshooting DNS comune con soluzioni
+  - Script PowerShell per automazione configurazione DNS
+  - Test di verifica DNS e connettività TCP
+  - Gestione IP dinamici CRC dopo riavvio
+
+- **Documentazione Consolidata**: Riorganizzazione completa della documentazione
+  - Eliminazione file ridondante `openshift-local-guide.md`
+  - Creazione `DOCUMENTATION_ANALYSIS.md` per analisi struttura
+  - Creazione `DOCUMENTATION_UPDATE_SUMMARY.md` per riepilogo modifiche
+  - Aggiornamento riferimenti incrociati tra documenti
+  - Navigazione ottimizzata dal README
+
+### Changed
+- **Struttura Documentazione**: Consolidamento da 2 guide sovrapposte a 1 guida principale
+  - OPENSHIFT_DEPLOYMENT_GUIDE.md ora contiene tutto il necessario
+  - Rimossi collegamenti rotti e riferimenti obsoleti
+  - Migliorata navigazione gerarchica (README → Guide Specializzate)
+
+### Fixed
+- **Riferimenti Documentazione**: Corretti tutti i link e riferimenti dopo consolidamento
+  - Aggiornato OPENSHIFT_DEPLOYMENT_GUIDE.md con note integrative
+  - Rimosso riferimento a `openshift-local-guide.md` dal README
+  - Aggiornati riferimenti in DOCUMENTATION_UPDATE_SUMMARY.md
+
+### Documentation
+- **Analisi Documentazione**: Documento completo dell'analisi struttura e raccomandazioni
+  - Confronto tra struttura precedente e ottimale
+  - Piano d'azione per consolidamento
+  - Risultati ottenuti dal refactoring documentazione
+
+## [1.1.0] - 2025-09-01file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-09-01
+## [1.1.0] - 2025-09-01
 
 ### Added
-- **H2 Database Integration**: Added H2 in-memory database for local development
-  - Configured H2 console access at `/h2-console`
-  - Updated `application-dev.yml` with H2 connection settings
-  - Added H2 dependency to `pom.xml`
-- **Multi-Environment Configuration**:
-  - Development profile with H2 database and multicast Hazelcast discovery
-  - Staging profile with TCP Hazelcast discovery for containerized environments
-  - Production profile with Kubernetes Hazelcast discovery
-- **Enhanced OpenAPI Documentation**:
-  - Added detailed API information (title, version, description)
-  - Configured contact information and Apache 2.0 license
-  - Added server configurations for local development and OpenShift production
-  - Improved Swagger UI with complete metadata
-- **Comprehensive Documentation**:
-  - `README.md` with deployment instructions for all environments
-  - `api-testing.md` with API testing examples
-  - `cloud-deployment.md` with cloud deployment guides
-  - `openshift-local-guide.md` with OpenShift local setup
-- **Containerization Support**:
-  - `Dockerfile` for containerized deployment
-  - `deployment.yaml` for Kubernetes deployment
-  - `grafana-deployment.yaml` and `grafana-dashboard.json` for monitoring
-- **Development Tools**:
-  - Maven wrapper (`mvnw.cmd`) for consistent builds
-  - Quick test commands script (`quick-test-commands.sh`)
-  - PowerShell setup script for OpenShift local
+- **Sistema di Monitoraggio Completo Grafana & Prometheus**:
+  - Dashboard Grafana preconfigurato con 9 pannelli metrici
+  - Metriche JVM complete (memoria, CPU, GC, thread)
+  - Metriche HTTP (rate richieste, tempi risposta, codici stato)
+  - Metriche Hazelcast (cache operations, hit rate, cluster size)
+  - Metriche Database (HikariCP connections, performance)
+  - Deployment Grafana automatizzato su OpenShift
+  - Configurazione datasource Prometheus automatica
+  - Endpoint `/actuator/prometheus` per metriche in tempo reale
+
+- **Deployment OpenShift Local Completo**:
+  - Guida deployment step-by-step per principianti
+  - Setup automatico con script PowerShell/Bash
+  - Configurazione cluster Hazelcast distribuito (2 membri)
+  - RBAC completo con service account e role binding
+  - Route esposte per accesso esterno
+  - Troubleshooting avanzato con soluzioni comuni
+
+- **Sistema di Testing Avanzato**:
+  - Test cache distribuita multi-istanza verificati
+  - Test API REST completi con cURL e Postman
+  - Test performance con Apache Bench e JMeter
+  - Test di sicurezza e validazione input
+  - Automazione test con script completi
+
+- **Documentazione Cross-Platform**:
+  - Comandi separati per Windows (PowerShell) e Linux/Mac (Bash)
+  - Setup OpenShift Local per entrambi i sistemi operativi
+  - Configurazioni ambiente unificate
+  - Troubleshooting specifico per piattaforma
 
 ### Changed
-- **Cross-Platform Documentation**: Updated all guide files for Windows and Linux/Mac compatibility
-  - `README.md`: Divided build, Docker, and OpenShift commands into Windows (PowerShell) and Linux/Mac (Bash) sections
-  - `openshift-local-guide.md`: Added PowerShell equivalents for all OpenShift CLI commands
-  - `cloud-deployment.md`: Separated AWS EKS deployment commands by operating system
-  - `api-testing.md`: Added PowerShell cURL commands and monitoring examples
-- **Documentation Uniformity**: Standardized formatting and structure across all guide files
-  - Consistent emoji usage (🚀, 💻, 🧪, 📊, etc.) for section headers
-  - Uniform section organization and formatting patterns
-  - Enhanced content with detailed explanations and automation scripts
-  - Improved cross-platform command separation and examples
-- **SpringDoc OpenAPI**: Updated from incompatible version 2.1.0 to 1.6.9 for Spring Boot 2.7.x compatibility
-- **Hazelcast Configuration**: Fixed XML configuration for proper multicast discovery in development
-- **Logging Configuration**: Corrected JSON pattern escaping in `logback-spring.xml`
+- **Architettura Monitoraggio**: Implementato sistema di monitoraggio enterprise-grade
+  - Prometheus per raccolta metriche
+  - Grafana per visualizzazione dashboard
+  - Micrometer per instrumentation Java
+  - Metriche strutturate JSON per logging
+
+- **Deployment Strategy**: Ottimizzato per OpenShift Local
+  - Java 17 invece di 21 per compatibilità CRC
+  - Configurazione Hazelcast Kubernetes discovery
+  - Service account con permessi minimi necessari
+  - Health checks e readiness probes
+
+- **Documentazione Strutturata**: Riorganizzata documentazione per chiarezza
+  - README.md aggiornato con sezione monitoraggio
+  - Guide specializzate separate per argomento
+  - Riferimenti incrociati tra documenti
+  - Indice navigabile migliorato
 
 ### Fixed
-- **Dependency Compatibility**: Resolved SpringDoc OpenAPI version conflict with Spring Boot 2.7.18
-- **XML Parsing Errors**: Fixed logback configuration JSON pattern syntax
-- **Profile Configuration**: Removed redundant profile declarations in YAML files
+- **Configurazioni Ambiente**: Allineate versioni Java (17) tra sviluppo e produzione
+- **Dipendenze Maven**: Risolte incompatibilità SpringDoc OpenAPI
+- **Configurazioni Hazelcast**: Corretta discovery per ambiente Kubernetes
+- **Script Automazione**: Migliorata gestione errori e logging colorato
 
-### Removed
-- **Obsolete Files**: Cleaned up unused configuration files (`environment-configs.yml`)
+### Performance
+- **Cache Distribuita**: Cluster Hazelcast 2+ membri funzionante
+- **Database Connection Pool**: HikariCP ottimizzato con 10 connessioni min/max
+- **JVM Tuning**: Configurazioni garbage collection ottimizzate
+- **Monitoring Overhead**: Metriche Prometheus con impatto minimo sulle performance
 
 ## [Unreleased]
 

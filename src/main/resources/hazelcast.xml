@@ -7,7 +7,11 @@
     <network>
         <port auto-increment="true">5701</port>
         <join>
-            <multicast enabled="true"/>
+            <kubernetes enabled="true">
+                <namespace>hazelcast-demo-dev</namespace>
+                <service-name>hazelcast-demo</service-name>
+                <service-port>5701</service-port>
+            </kubernetes>
         </join>
     </network>
 
