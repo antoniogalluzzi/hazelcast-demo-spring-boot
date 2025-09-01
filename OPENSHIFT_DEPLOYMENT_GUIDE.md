@@ -4,6 +4,7 @@
 
 Ciao! Questa guida ti accompagnerà passo dopo passo nel rilascio di un'applicazione Spring Boot con Hazelcast (un sistema di cache distribuita) su OpenShift Local. 
 
+
 **Cosa significa tutto questo?**
 - **Spring Boot**: Un framework Java per creare applicazioni web velocemente
 - **Hazelcast**: Un sistema che permette di condividere dati tra più server (cache distribuita)
@@ -11,11 +12,10 @@ Ciao! Questa guida ti accompagnerà passo dopo passo nel rilascio di un'applicaz
 - **Cluster distribuito**: Più copie della stessa applicazione che lavorano insieme
 
 **Perché è utile?**
-Immagina di avere un sito we### 📊 **Monitoraggio Grafana & Prometheus:**
-- **`grafana-dashboard.json`** → Dashboard completo con metriche JVM, HTTP, Hazelcast
-- **`grafana-deployment.yaml`** → Deployment Grafana con datasource Prometheus
-- **`pom.xml`** → Micrometer Registry Prometheus incluso
-- **`deployment.yaml`** → Annotazioni Prometheus per scraping automaticoto visitato. Invece di chiedere sempre al database (che è lento), puoi salvare i dati più usati in una "cache veloce". Con Hazelcast, questa cache è condivisa tra più server, così tutti lavorano più velocemente!
+Immagina di avere un sito web.
+
+### 📊 Monitoraggio (strumenti esterni)
+Le istruzioni e i file di esempio per strumenti di monitoraggio esterni non sono inclusi in questo repository.
 
 **Cosa otterremo alla fine:**
 - ✅ Un'applicazione web funzionante
@@ -562,118 +562,7 @@ curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/user/1
 
 ---
 
-## � Passo 8: Monitoraggio con Grafana e Prometheus
-
-Il progetto include un **sistema di monitoraggio completo** con Grafana e Prometheus!
-
-### 8.1 Cosa Sono Grafana e Prometheus?
-
-**Prometheus**: Sistema che raccoglie metriche dalle applicazioni
-**Grafana**: Strumento per visualizzare le metriche in dashboard interattivi
-
-**Perché è utile:**
-- Monitorare performance in tempo reale
-- Identificare problemi prima che diventino critici
-- Analizzare l'utilizzo delle risorse
-- Tracciare le performance della cache Hazelcast
-
-### 8.2 Metriche Disponibili
-
-Il dashboard include queste metriche:
-
-**🔧 JVM Metrics:**
-- Utilizzo memoria (usata vs allocata)
-- CPU usage per pod
-- Garbage collection
-
-**🌐 HTTP Metrics:**
-- Rate delle richieste (req/sec)
-- Tempi di risposta (95° percentile)
-- Error rate per endpoint
-
-**⚡ Hazelcast Metrics:**
-- Operazioni cache (get/put/remove)
-- Hit rate della cache
-- Dimensione del cluster
-- Performance cache distribuita
-
-**🗄️ Database Metrics:**
-- Connessioni attive/idle
-- Query performance
-- Connection pool status
-
-### 8.3 Deploy Grafana e Prometheus
-
-**✅ Grafana Deployato con Successo!**
-
-```bash
-# Grafana è stato deployato automaticamente
-oc new-app grafana/grafana:latest --name=grafana
-oc expose service/grafana
-
-# URL di Grafana
-https://grafana-hazelcast-demo-dev.apps-crc.testing
-```
-
-**Nota:** Su OpenShift Local, Prometheus potrebbe non essere installato di default. Useremo le metriche dirette dell'applicazione.
-
-### 8.4 Configurazione Datasource
-
-1. **Accedi a Grafana:**
-   - URL: `https://grafana-hazelcast-demo-dev.apps-crc.testing`
-   - Username: `admin`
-   - Password: `admin` (cambia al primo accesso)
-
-2. **Aggiungi Datasource:**
-   - Vai su: Configuration → Data Sources → Add data source
-   - Seleziona: Prometheus
-   - URL: `http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus`
-   - Salva e testa la connessione
-
-### 8.5 Importa Dashboard Preconfigurato
-
-1. **Importa Dashboard:**
-   - Vai su: Create → Import
-   - Carica il file `grafana-dashboard.json`
-   - Seleziona il datasource configurato
-   - Importa
-
-2. **Dashboard Include:**
-   - **JVM Memory Usage** - Monitoraggio memoria Java
-   - **HTTP Request Rate** - Rate delle richieste API
-   - **HTTP Response Time** - Tempi di risposta (95° percentile)
-   - **Hazelcast Cache Operations** - Operazioni cache distribuita
-   - **Hazelcast Cache Hit Rate** - Efficienza della cache
-   - **Hazelcast Cluster Size** - Membri del cluster
-   - **Database Connections** - Pool connessioni PostgreSQL
-   - **Pod CPU/Memory Usage** - Risorse container
-
-### 8.6 Test del Monitoraggio
-
-```bash
-# Verifica endpoint metriche
-curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus
-
-# Metriche JVM
-curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus | grep jvm_memory
-
-# Metriche HTTP
-curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus | grep http_server
-
-# Metriche Hazelcast
-curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus | grep hazelcast
-
-# Metriche Database
-curl http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/prometheus | grep hikaricp
-```
-
-**Cosa dovresti vedere nel Dashboard:**
-- 📊 **Grafici in tempo reale** delle performance
-- 📈 **Metriche JVM** (heap, non-heap, GC)
-- 🌐 **Metriche HTTP** (requests/sec, response time)
-- ⚡ **Metriche Cache** (hit rate, operations)
-- 🗄️ **Metriche DB** (connections, performance)
-
+## Passo 8: Monitoraggio
 ---
 
 ## �🔧 Risoluzione dei Problemi Più Comuni
@@ -811,16 +700,14 @@ Ora vediamo quali route sono state create:
 oc get routes -n hazelcast-demo-dev
 ```
 
-**Output atteso:**
+**Output atteso (example):**
 ```
 NAME             HOST/PORT                                      PATH   SERVICES         PORT    TERMINATION   WILDCARD
 hazelcast-demo   hazelcast-demo-hazelcast-demo-dev.apps-crc.testing   /      hazelcast-demo   8080                 None
-grafana          grafana-hazelcast-demo-dev.apps-crc.testing          /      grafana          3000                 None
 ```
 
 **Cosa significa:**
 - **hazelcast-demo**: URL dell'applicazione principale
-- **grafana**: URL del dashboard di monitoraggio
 
 ### 9.4 Configura il File Hosts
 
@@ -838,7 +725,6 @@ Alla fine del file, aggiungi queste righe (sostituisci con il tuo IP CRC):
 ```
 # OpenShift Local DNS Configuration
 192.168.130.11    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing
-192.168.130.11    grafana-hazelcast-demo-dev.apps-crc.testing
 ```
 
 **Importante:**
@@ -855,7 +741,6 @@ Alla fine del file, aggiungi queste righe (sostituisci con il tuo IP CRC):
 # ...
 # OpenShift Local DNS Configuration
 192.168.130.11    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing
-192.168.130.11    grafana-hazelcast-demo-dev.apps-crc.testing
 ```
 
 ### 9.5 Verifica la Configurazione DNS
@@ -877,9 +762,6 @@ hazelcast-demo-hazelcast-demo-dev.apps-crc.testing A 3600 Answer     192.168.130
 ```bash
 # Test porta 80 (HTTP)
 Test-NetConnection -ComputerName hazelcast-demo-hazelcast-demo-dev.apps-crc.testing -Port 80
-
-# Test porta 443 (HTTPS) per Grafana
-Test-NetConnection -ComputerName grafana-hazelcast-demo-dev.apps-crc.testing -Port 443
 ```
 
 **Output atteso:**
@@ -902,16 +784,6 @@ curl -s http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/healt
 **Output atteso:**
 ```json
 {"status":"UP"}
-```
-
-**Test di Grafana:**
-```bash
-curl -s -k https://grafana-hazelcast-demo-dev.apps-crc.testing/api/health
-```
-
-**Output atteso:**
-```json
-{"database":"ok","version":"12.1.1"}
 ```
 
 **Test API completa:**
@@ -955,13 +827,12 @@ Restart-Service -Name Dnscache
 
 **Configurazione ERRATA:**
 ```
-192.168.130.11    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing grafana-hazelcast-demo-dev.apps-crc.testing
+192.168.130.11    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing
 ```
 
 **Configurazione CORRETTA:**
 ```
 192.168.130.11    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing
-192.168.130.11    grafana-hazelcast-demo-dev.apps-crc.testing
 ```
 
 #### Problema 4: IP cambiato dopo riavvio CRC
@@ -999,7 +870,6 @@ $content = $content | Where-Object { $_ -notmatch "apps-crc.testing" }
 $content += ""
 $content += "# OpenShift Local DNS Configuration - Updated $(Get-Date)"
 $content += "$CrcIp    hazelcast-demo-hazelcast-demo-dev.apps-crc.testing"
-$content += "$CrcIp    grafana-hazelcast-demo-dev.apps-crc.testing"
 
 # Scrivi il file
 $content | Out-File -FilePath $hostsFile -Encoding ASCII -Force
@@ -1034,10 +904,6 @@ Test-NetConnection -ComputerName hazelcast-demo-hazelcast-demo-dev.apps-crc.test
 Write-Host "`n=== Application Health Test ==="
 curl -s http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/actuator/health
 
-# 4. Test Grafana
-Write-Host "`n=== Grafana Health Test ==="
-curl -s -k https://grafana-hazelcast-demo-dev.apps-crc.testing/api/health
-
 # 5. Test API functionality
 Write-Host "`n=== API Functionality Test ==="
 $userResponse = curl -s -X POST http://hazelcast-demo-hazelcast-demo-dev.apps-crc.testing/user -H "Content-Type: application/json" -d '{"name":"DNS Test User"}'
@@ -1060,9 +926,6 @@ hazelcast-demo-hazelcast-demo-dev.apps-crc.testing               True
 
 === Application Health Test ===
 {"status":"UP"}
-
-=== Grafana Health Test ===
-{"database":"ok","version":"12.1.1"}
 
 === API Functionality Test ===
 
@@ -1134,7 +997,6 @@ Questa configurazione è molto simile a quella che useresti in un ambiente di pr
 
 **Prossimi passi possibili:**
 - Aggiungere più repliche per maggiore disponibilità
-- Configurare monitoraggio con Prometheus/Grafana
 - Aggiungere persistenza per la cache Hazelcast
 - Implementare health checks automatici
 
@@ -1168,11 +1030,7 @@ Ho esaminato attentamente **tutti** i file e gli aspetti del progetto. Ecco cosa
 - **`setup-openshift-local.ps1`** → Script PowerShell avanzato per Windows
 - **`deployment.yaml`** → Configurazione Kubernetes completa con RBAC
 
-### � **Monitoraggio Grafana & Prometheus:**
-- **`grafana-dashboard.json`** → Dashboard completo con metriche JVM, HTTP, Hazelcast
-- **`grafana-deployment.yaml`** → Deployment Grafana con datasource Prometheus
-- **`pom.xml`** → Micrometer Registry Prometheus incluso
-- **`deployment.yaml`** → Annotazioni Prometheus per scraping automatico
+### � **Monitoraggio (strumenti esterni)**:
 
 ### �📚 **Documentazione Esistente:**
 - **`README.md`** → Documentazione completa con profili, test, API
@@ -1194,14 +1052,11 @@ Ho esaminato attentamente **tutti** i file e gli aspetti del progetto. Ecco cosa
 - Gestione errori e logging colorato
 
 **✅ Configurazioni Avanzate:**
-- Actuator per monitoraggio Prometheus
 - Health checks e metriche
 - Logging strutturato JSON
 - RBAC completo con secrets
 
 **✅ Monitoraggio Completo:**
-- **Grafana Dashboard** con metriche complete
-- **Prometheus Integration** automatica
 - **Micrometer Metrics** esposte
 - **JVM Monitoring** (memoria, CPU)
 - **HTTP Metrics** (rate, response time)
@@ -1218,7 +1073,7 @@ Ho esaminato attentamente **tutti** i file e gli aspetti del progetto. Ecco cosa
 
 1. **Approccio Ibrido**: Manale per apprendimento + Script per automazione
 2. **Configurazioni Multiple**: Copertura di tutti i profili (dev/staging/prod)
-3. **Monitoraggio Avanzato**: Actuator, Prometheus, health checks
+3. **Monitoraggio Avanzato**: Actuator, health checks
 4. **Logging Strutturato**: Configurazione JSON per produzione
 5. **Test Completi**: Dalla cache distribuita alle API REST
 6. **Sicurezza**: RBAC, secrets, best practices
@@ -1229,7 +1084,6 @@ Ho esaminato attentamente **tutti** i file e gli aspetti del progetto. Ecco cosa
 - ✅ **100%** degli script di automazione integrati
 - ✅ **100%** dei profili Spring coperti
 - ✅ **100%** delle funzionalità di monitoraggio incluse
-- ✅ **100%** delle metriche Grafana/Prometheus documentate
 
 **La guida ora è completamente allineata con il progetto reale e include tutto ciò che è necessario per un deployment completo!** 🎉
 

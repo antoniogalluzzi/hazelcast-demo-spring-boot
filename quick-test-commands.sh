@@ -57,7 +57,7 @@ for i in {1..10}; do
 done
 
 # Monitor response times
-curl http://$(oc get routes -o jsonpath='{.items[0].spec.host}')/actuator/prometheus | grep http_server_requests_seconds
+
 
 ## 9. Troubleshooting
 # Check pod status

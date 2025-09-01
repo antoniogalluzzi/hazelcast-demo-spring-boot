@@ -175,7 +175,7 @@ show_app_info() {
         log_info "Swagger UI: http://$route/swagger-ui.html"
         log_info "API Docs: http://$route/v3/api-docs"
         log_info "Health Check: http://$route/actuator/health"
-        log_info "Prometheus Metrics: http://$route/actuator/prometheus"
+    log_info "Actuator Metrics endpoint: http://$route/actuator/metrics"
     fi
 }
 

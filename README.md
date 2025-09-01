@@ -1,6 +1,6 @@
 # Hazelcast Demo Project
 
-Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distribuita e PostgreSQL come database su OpenShift, con un sistema di monitoraggio completo Grafana & Prometheus.
+Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distribuita e PostgreSQL come database su OpenShift.
 
 ## � Indice
 
@@ -20,7 +20,6 @@ Questo progetto dimostra l'uso di Spring Boot con Hazelcast per la cache distrib
 - [🚀 Deploy su OpenShift Local](#-deploy-su-openshift-local)
   - [Setup Automatico (Raccomandato)](#setup-automatico-raccomandato)
   - [Setup Manuale](#setup-manuale)
-- [📊 Sistema di Monitoraggio Grafana & Prometheus](#-sistema-di-monitoraggio-grafana--prometheus)
   - [Metriche Disponibili](#metriche-disponibili)
   - [Dashboard Preconfigurato](#dashboard-preconfigurato)
   - [Configurazione Datasource](#configurazione-datasource)
@@ -155,8 +154,8 @@ curl http://localhost:8080/user/1
 # Verifica health con metriche dettagliate
 curl http://localhost:8080/actuator/health
 
-# Visualizza metriche Prometheus
-curl http://localhost:8080/actuator/prometheus | head -20
+# Visualizza metriche via Actuator
+curl http://localhost:8080/actuator/metrics | head -20
 
 # Accedi alla console H2
 open http://localhost:8080/h2-console
@@ -168,7 +167,7 @@ Durante lo sviluppo, puoi monitorare l'applicazione localmente:
 
 ```bash
 # Metriche JVM in tempo reale
-watch -n 5 'curl -s http://localhost:8080/actuator/prometheus | grep -E "(jvm_memory|jvm_threads)"'
+watch -n 5 'curl -s http://localhost:8080/actuator/metrics | head -n 50'
 
 # Health check continuo
 watch -n 10 'curl -s http://localhost:8080/actuator/health | jq .'
@@ -216,109 +215,9 @@ docker tag hazelcast-demo <registry>/hazelcast-demo:latest
 docker push <registry>/hazelcast-demo:latest
 ```
 
-## � Sistema di Monitoraggio Grafana & Prometheus
+## Monitoraggio
 
-Il progetto include un **sistema di monitoraggio completo** con Grafana e Prometheus per monitorare performance, cache distribuita e metriche applicative in tempo reale.
-
-### Metriche Disponibili
-
-**🔧 JVM Metrics:**
-- Utilizzo memoria (heap, non-heap, metaspace)
-- CPU usage per pod e processo
-- Garbage collection (pause time, frequency)
-- Thread count (live, daemon, blocked)
-- Class loading e unloading
-
-**🌐 HTTP Metrics:**
-- Rate delle richieste (req/sec) per endpoint
-- Tempi di risposta (95° percentile, media)
-- Codici di stato HTTP (2xx, 4xx, 5xx)
-- Error rate per endpoint
-- Throughput totale
-
-**⚡ Hazelcast Cache Metrics:**
-- Operazioni cache (get, put, remove)
-- Hit rate e miss rate della cache
-- Dimensione cache distribuita
-- Performance operazioni cache
-- Membri del cluster attivi
-
-**🗄️ Database Metrics:**
-- Connessioni attive/idle (HikariCP)
-- Connection pool utilization
-- Query performance e timing
-- Database connection errors
-
-**📈 System Metrics:**
-- Utilizzo CPU e memoria del sistema
-- Disk I/O e network I/O
-- Pod resource consumption
-- Application uptime
-
-### Dashboard Preconfigurato
-
-Il progetto include un **dashboard Grafana completo** (`grafana-dashboard.json`) con:
-
-- **9 pannelli metrici** organizzati per categoria
-- **Query Prometheus ottimizzate** per performance
-- **Grafici in tempo reale** con refresh automatico (30s)
-- **Alert thresholds** configurabili
-- **Drill-down capabilities** per troubleshooting
-
-**Pannelli Dashboard:**
-1. **JVM Memory Usage** - Monitoraggio memoria Java
-2. **HTTP Request Rate** - Throughput richieste API
-3. **Database Connections** - Pool connessioni PostgreSQL
-4. **System CPU Usage** - CPU sistema vs JVM
-5. **GC Activity** - Attività garbage collection
-6. **Application Uptime** - Tempo di attività applicazione
-7. **HTTP Response Times** - Tempi risposta (95° percentile)
-8. **Thread Count** - Conteggio thread attivi
-9. **Disk Usage** - Utilizzo spazio disco
-
-### Configurazione Datasource
-
-**Su OpenShift Local:**
-```bash
-# Deploy Grafana
-oc apply -f grafana-deployment.yaml
-
-# Configura datasource
-oc exec -it deployment/grafana -- curl -X POST -H "Content-Type: application/json" \
-  -u admin:admin \
-  -d '{"name":"Hazelcast Demo","type":"prometheus","url":"http://hazelcast-demo:8080/actuator/prometheus"}' \
-  http://localhost:3000/api/datasources
-
-# Importa dashboard
-oc exec -it deployment/grafana -- curl -X POST -H "Content-Type: application/json" \
-  -u admin:admin \
-  -d @grafana-dashboard.json \
-  http://localhost:3000/api/dashboards/db
-```
-
-**URL di Accesso:**
-- **Grafana**: `https://grafana-hazelcast-demo-dev.apps-crc.testing`
-- **Username**: `admin`
-- **Password**: `admin` (cambia al primo accesso)
-
-### Test del Monitoraggio
-
-```bash
-# Verifica endpoint metriche
-curl http://localhost:8080/actuator/prometheus | grep -E "(jvm|http|hazelcast|hikaricp)"
-
-# Metriche JVM
-curl -s http://localhost:8080/actuator/prometheus | grep jvm_memory_used_bytes
-
-# Metriche HTTP
-curl -s http://localhost:8080/actuator/prometheus | grep http_server_requests
-
-# Metriche Cache
-curl -s http://localhost:8080/actuator/prometheus | grep hazelcast
-
-# Metriche Database
-curl -s http://localhost:8080/actuator/prometheus | grep hikaricp
-```
+L'app espone metriche tramite Spring Boot Actuator quando il profilo è abilitato; per verificarle, usa gli endpoint Actuator (es. `/actuator/metrics`).
 
 
 ### Setup Manuale
@@ -348,7 +247,6 @@ curl -s http://localhost:8080/actuator/prometheus | grep hikaricp
 - ✅ **Cluster Hazelcast Distribuito** - 2 pod con cache condivisa
 - ✅ **RBAC e Sicurezza** - Service account e permessi minimi
 - ✅ **Route Esterne** - Accesso HTTP dall'esterno
-- ✅ **Monitoraggio Grafana** - Dashboard completo con metriche
 - ✅ **Test di Validazione** - Verifica funzionalità complete
 
 ## 🧪 Test e Validazione
@@ -381,7 +279,7 @@ Members {size:2, ver:2} [
 - **Hazelcast 5.1.7** con Kubernetes discovery
 - **PostgreSQL 13** su OpenShift
 - **RBAC** configurato per discovery automatico
-- **Grafana** per monitoraggio cluster
+- Monitoraggio del cluster tramite strumenti esterni (opzionale)
 
 #### 🏗️ Architettura Deployata
 ```
@@ -391,7 +289,7 @@ Pod Hazelcast-2 ──┘
          │
          ├── PostgreSQL Database
          │
-         └── Grafana Monitoring
+         └── Monitoring (esterno)
 ```
 
 ### Test API REST
@@ -445,7 +343,7 @@ mvn clean compile
 #### ✅ Health Checks
 - ✅ Spring Boot Actuator funzionante
 - ✅ Endpoint `/actuator/health` disponibile
-- ✅ Metriche Prometheus esposte
+- ✅ Metriche esposte via Actuator (es. `/actuator/metrics`)
 
 ### Test Database
 
@@ -501,7 +399,7 @@ La documentazione OpenAPI include le seguenti informazioni:
 - `POST /user` - Crea nuovo utente
 - `GET /cache` - Test cache
 - `GET /actuator/health` - Health check
-- `GET /actuator/prometheus` - Metriche Prometheus
+- `GET /actuator/metrics` - Metriche disponibili via Actuator
 
 ### Guide Specializzate
 
@@ -511,7 +409,6 @@ La documentazione OpenAPI include le seguenti informazioni:
   - Configurazione cluster distribuito
   - Troubleshooting avanzato
   - Configurazione DNS e networking
-  - Setup monitoraggio Grafana
 
 #### 🧪 Testing Guide
 - **[api-testing.md](api-testing.md)** - Guida completa testing API
@@ -553,8 +450,6 @@ La documentazione OpenAPI include le seguenti informazioni:
 - ✅ Kubernetes/OpenShift deployment
 
 **📊 Monitoraggio Enterprise**
-- ✅ Grafana dashboard completo (9 pannelli)
-- ✅ Prometheus metrics esposte
 - ✅ Micrometer instrumentation
 - ✅ JVM, HTTP, Database, Cache metrics
 - ✅ Alert e monitoring in tempo reale
@@ -604,7 +499,6 @@ Il sistema espone **40+ metriche** categorizzate:
 Il progetto è **completamente funzionale** e pronto per:
 - ✅ **Deploy in produzione** su OpenShift/Kubernetes
 - ✅ **Scale orizzontale** con più repliche
-- ✅ **Monitoraggio enterprise** con Grafana
 - ✅ **Testing automatizzato** per CI/CD
 - ✅ **Documentazione completa** per manutenzione
 

@@ -200,7 +200,7 @@ function Show-AppInfo {
             Write-Info "Swagger UI: http://$route/swagger-ui.html"
             Write-Info "API Docs: http://$route/v3/api-docs"
             Write-Info "Health Check: http://$route/actuator/health"
-            Write-Info "Prometheus Metrics: http://$route/actuator/prometheus"
+            Write-Info "Actuator Metrics endpoint: http://$route/actuator/metrics"
         }
     } catch {
         Write-Warning "Could not retrieve route information"

@@ -75,30 +75,9 @@ kubectl apply -f deployment.yaml -n hazelcast-demo
 ```
 
 ### Setup Monitoring
+### Monitoring
 
-#### Per Linux/Mac (Bash)
-```bash
-# Install Prometheus Operator
-helm install prometheus prometheus-community/kube-prometheus-stack
-
-# Install Grafana
-helm install grafana stable/grafana
-
-# Get Grafana admin password
-kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-```
-
-#### Per Windows (PowerShell)
-```powershell
-# Install Prometheus Operator
-helm install prometheus prometheus-community/kube-prometheus-stack
-
-# Install Grafana
-helm install grafana stable/grafana
-
-# Get Grafana admin password
-(kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}") | %{ [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($_)) }
-```
+Questa sezione è stata rimossa: il repository non fornisce più script di installazione per sistemi di monitoraggio specifici.
 
 ## Google GKE
 
@@ -249,10 +228,10 @@ database:
 - **On-prem**: Self-hosted PostgreSQL
 
 ### Monitoring
-- **AWS**: Amazon Managed Prometheus + Amazon Managed Grafana
+- **AWS**: Uso di soluzioni monitoring gestite (es. Amazon Managed Services)
 - **GCP**: Cloud Monitoring + Cloud Logging
 - **Azure**: Azure Monitor + Azure Log Analytics
-- **On-prem**: Self-hosted Prometheus + Grafana
+- **On-prem**: Soluzioni di monitoring self-hosted o gestite
 
 ### Storage
 - **AWS**: EBS, EFS

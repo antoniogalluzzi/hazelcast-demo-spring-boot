@@ -12,7 +12,7 @@ Questa guida fornisce esempi completi per testare l'API del progetto Hazelcast D
 | `POST` | `/user` | Crea nuovo utente | ❌ |
 | `GET` | `/cache` | Stato cache distribuita | ✅ |
 | `GET` | `/actuator/health` | Health check applicazione | ❌ |
-| `GET` | `/actuator/prometheus` | Metriche Prometheus | ❌ |
+| `GET` | `/actuator/metrics` | Health e metriche via Actuator (configurabile) | ❌ |
 | `GET` | `/h2-console` | Console H2 Database (solo dev) | ❌ |
 
 ### Modelli Dati
@@ -285,37 +285,9 @@ while ($true) {
 }
 ```
 
-### Test Metriche Prometheus
+### Metriche Actuator
 
-#### Per Linux/Mac (Bash)
-```bash
-# Metriche complete
-curl -X GET $BASE_URL/actuator/prometheus
-
-# Metriche specifiche Hazelcast
-curl -X GET $BASE_URL/actuator/prometheus | grep hazelcast
-
-# Metriche HTTP
-curl -X GET $BASE_URL/actuator/prometheus | grep http_server
-
-# Metriche JVM
-curl -X GET $BASE_URL/actuator/prometheus | grep jvm
-```
-
-#### Per Windows (PowerShell)
-```powershell
-# Metriche complete
-curl -X GET $BASE_URL/actuator/prometheus
-
-# Metriche specifiche Hazelcast
-(Invoke-WebRequest -Uri $BASE_URL/actuator/prometheus).Content | Select-String 'hazelcast'
-
-# Metriche HTTP
-(Invoke-WebRequest -Uri $BASE_URL/actuator/prometheus).Content | Select-String 'http_server'
-
-# Metriche JVM
-(Invoke-WebRequest -Uri $BASE_URL/actuator/prometheus).Content | Select-String 'jvm'
-```
+Le metriche dell'applicazione sono esposte tramite Spring Boot Actuator quando abilitate nel profilo. Per verificare quali metriche sono disponibili, interrogare gli endpoint Actuator abilitati (es. `/actuator/metrics`).
 
 ## 📮 Test con Postman
 
@@ -1245,68 +1217,11 @@ cd apache-jmeter-5.6.2/bin
 
 ### Metriche Disponibili
 
-#### Metriche HTTP
-```bash
-# Richieste totali
-curl -s http://localhost:8080/actuator/prometheus | grep http_server_requests
+Le metriche HTTP, Hazelcast e JVM possono essere consultate tramite gli endpoint di Spring Boot Actuator abilitati nel profilo. Interroga `/actuator/metrics` o gli endpoint di metrica specifici per verificare i valori.
 
-# Tempi di risposta
-curl -s http://localhost:8080/actuator/prometheus | grep http_server_request_duration
+### Dashboard e integrazione con sistemi di monitoraggio
 
-# Codici di stato
-curl -s http://localhost:8080/actuator/prometheus | grep http_server_responses
-```
-
-#### Metriche Hazelcast
-```bash
-# Statistiche cache
-curl -s http://localhost:8080/actuator/prometheus | grep hazelcast
-
-# Membri cluster
-curl -s http://localhost:8080/actuator/prometheus | grep hazelcast_cluster
-```
-
-#### Metriche JVM
-```bash
-# Utilizzo memoria
-curl -s http://localhost:8080/actuator/prometheus | grep jvm_memory
-
-# Garbage collection
-curl -s http://localhost:8080/actuator/prometheus | grep jvm_gc
-
-# Thread attivi
-curl -s http://localhost:8080/actuator/prometheus | grep jvm_threads
-```
-
-### Dashboard Grafana
-
-#### Configurazione Sorgente Dati
-```yaml
-# prometheus.yml
-global:
-  scrape_interval: 15s
-
-scrape_configs:
-  - job_name: 'hazelcast-demo'
-    static_configs:
-      - targets: ['localhost:8080']
-    metrics_path: '/actuator/prometheus'
-```
-
-#### Query Grafana Esempi
-```promql
-# Throughput HTTP
-rate(http_server_requests_total[5m])
-
-# Latenza p95
-histogram_quantile(0.95, rate(http_server_request_duration_seconds_bucket[5m]))
-
-# Hit rate cache
-hazelcast_cache_hit_rate
-
-# Utilizzo memoria
-jvm_memory_used_bytes / jvm_memory_max_bytes
-```
+Le istruzioni dettagliate per configurare dashboard o datasource sono state rimosse da questo repository.
 
 ## 🔒 Test di Sicurezza
 

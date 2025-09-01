@@ -43,16 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2025-09-01
 
 ### Added
-- **Sistema di Monitoraggio Completo Grafana & Prometheus**:
-  - Dashboard Grafana preconfigurato con 9 pannelli metrici
-  - Metriche JVM complete (memoria, CPU, GC, thread)
-  - Metriche HTTP (rate richieste, tempi risposta, codici stato)
-  - Metriche Hazelcast (cache operations, hit rate, cluster size)
-  - Metriche Database (HikariCP connections, performance)
-  - Deployment Grafana automatizzato su OpenShift
-  - Configurazione datasource Prometheus automatica
-  - Endpoint `/actuator/prometheus` per metriche in tempo reale
-
 - **Deployment OpenShift Local Completo**:
   - Guida deployment step-by-step per principianti
   - Setup automatico con script PowerShell/Bash
@@ -75,12 +65,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Troubleshooting specifico per piattaforma
 
 ### Changed
-- **Architettura Monitoraggio**: Implementato sistema di monitoraggio enterprise-grade
-  - Prometheus per raccolta metriche
-  - Grafana per visualizzazione dashboard
-  - Micrometer per instrumentation Java
-  - Metriche strutturate JSON per logging
-
 - **Deployment Strategy**: Ottimizzato per OpenShift Local
   - Java 17 invece di 21 per compatibilità CRC
   - Configurazione Hazelcast Kubernetes discovery
@@ -103,7 +87,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Cache Distribuita**: Cluster Hazelcast 2+ membri funzionante
 - **Database Connection Pool**: HikariCP ottimizzato con 10 connessioni min/max
 - **JVM Tuning**: Configurazioni garbage collection ottimizzate
-- **Monitoring Overhead**: Metriche Prometheus con impatto minimo sulle performance
 
 ## [Unreleased]
 
@@ -117,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hazelcast 5.1.7 distributed caching integration
 - Spring Data JPA with User entity and repository
 - REST API endpoints for user management with caching
-- Micrometer metrics with Prometheus registry
+- Micrometer metrics: registrazione e integrazione con sistemi esterni è fuori dal scope del repository
 - Structured logging with Logstash Logback Encoder
 - SpringDoc OpenAPI documentation
 - GitHub repository setup and initial commit
