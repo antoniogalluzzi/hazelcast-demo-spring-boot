@@ -1,7 +1,0 @@
-com\example\hazelcastdemo\OpenApiConfig.class
-com\example\hazelcastdemo\CacheController.class
-com\example\hazelcastdemo\LoggingContext.class
-com\example\hazelcastdemo\User.class
-com\example\hazelcastdemo\UserRepository.class
-com\example\hazelcastdemo\UserService.class
-com\example\hazelcastdemo\HazelcastDemoApplication.class
