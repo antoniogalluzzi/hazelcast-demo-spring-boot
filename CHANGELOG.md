@@ -60,6 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **POM.xml Formatting**: Corrected XML declaration and structure in `pom.xml` to resolve parsing errors and ensure proper Maven validation.
+
 ## [0.1.0] - 2025-09-01
 
 ### Added
