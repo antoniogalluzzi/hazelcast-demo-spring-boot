@@ -6,7 +6,7 @@
 **📧 Email**: antonio.galluzzi91@gmail.com  
 **🐙 GitHub**: [@antoniogalluzzi](https://github.com/antoniogalluzzi)  
 **📅 Ultimo aggiornamento**: 2 Settembre 2025  
-**📖 Versione**: 2.1.0
+**📖 Versione**: 2.2.0
 
 ---
 
@@ -31,6 +31,12 @@
 - [Docker Build](#docker-build)
 - [OpenShift Local](#openshift-local)
 - [Cloud Providers](#cloud-providers)
+
+### 🛠️ **[Script di Automazione](#script-di-automazione)**
+- [Struttura Script Modulari](#struttura-script-modulari)
+- [Setup e Configurazione](#setup-e-configurazione)
+- [Development Tools](#development-tools)
+- [Build e Deploy](#build-e-deploy)
 
 ### 🧪 **[Testing](#testing)**
 - [Test Locali](#test-locali)
@@ -170,8 +176,19 @@ Il progetto è stato **ottimizzato e pulito** per massima chiarezza:
 ├── ⚖️ LICENSE                      # Licenza Apache 2.0
 ├── ⚙️ pom.xml                      # Configurazione Maven e dipendenze
 ├── 🔧 mvnw / mvnw.cmd             # Maven Wrapper (Windows/Linux)
-├── 🚀 start-local-dev.ps1         # Script avvio sviluppo (Windows)
-├── 🏗️ setup-openshift-local.ps1   # Setup OpenShift Local (Windows)
+├── � scripts/                     # ← NUOVA STRUTTURA SCRIPT MODULARI
+│   ├── 📖 README.md               # Documentazione script completa
+│   ├── utilities/                 # Funzioni condivise
+│   │   ├── 🔧 common-functions.ps1    # Libreria utilità (800+ righe)
+│   │   └── ✅ environment-check.ps1   # Verifica prerequisiti
+│   ├── setup/                     # Script di configurazione
+│   │   ├── 🚀 setup-dev-environment.ps1     # Setup sviluppo locale
+│   │   └── 🏗️ setup-openshift-local.ps1     # Setup OpenShift Local
+│   ├── development/               # Tool di sviluppo
+│   │   ├── 🎯 cluster-manager.ps1        # Gestione cluster (800+ righe)
+│   │   └── 🧪 test-api-endpoints.ps1     # Testing completo (900+ righe)
+│   └── build/                     # Build e deployment
+│       └── 🏗️ build-and-deploy.ps1       # Automazione completa
 ├── 🐳 Dockerfile                   # Container image per deploy
 ├── ☸️ deployment.yaml             # Kubernetes/OpenShift deployment
 ├── 🚫 .gitignore                  # Git ignore rules ottimizzate
@@ -201,14 +218,30 @@ Il progetto è stato **ottimizzato e pulito** per massima chiarezza:
         └── logback-spring.xml               # Logging configuration
 ```
 
-#### 🧹 **Pulizia Effettuata**
+#### 🧹 **Pulizia e Ottimizzazione Effettuata**
 
 **File Rimossi** (riduzione 67%):
-- ❌ Script duplicati Linux (`*.sh`) - Focus Windows  
+- ❌ Script monolitici obsoleti (`setup-openshift-local.ps1`, `start-local-dev.ps1`) - 2165+ righe rimosse
+- ❌ Script duplicati Linux (`*.sh`) - Focus Windows PowerShell
 - ❌ File di test temporanei (`quick-test-commands.sh`)
 - ❌ Archivi backup (`*.zip`, `maven/`, `h2.jar`) 
 - ❌ Configurazioni conflittuali (`application.properties`)
 - ❌ File temporanei (`.github/`, `target/`, `testdb.*`)
+
+**Script Modulari Creati** (nuova architettura):
+- ✅ `scripts/utilities/common-functions.ps1` - 810+ righe di funzioni condivise
+- ✅ `scripts/utilities/environment-check.ps1` - Sistema verifica prerequisiti
+- ✅ `scripts/setup/setup-dev-environment.ps1` - Setup sviluppo automatico
+- ✅ `scripts/setup/setup-openshift-local.ps1` - Deploy OpenShift completo
+- ✅ `scripts/development/cluster-manager.ps1` - Gestione cluster avanzata (800+ righe)  
+- ✅ `scripts/development/test-api-endpoints.ps1` - Testing suite completa (900+ righe)
+- ✅ `scripts/build/build-and-deploy.ps1` - Pipeline build/deploy automatica
+
+**Qualità Scripts**:
+- ✅ **Error-Free**: Tutti gli script superano l'analisi statica PowerShell
+- ✅ **Best Practices**: Variabili conformi, gestione errori robusta
+- ✅ **Modularità**: Funzioni riutilizzabili, architettura DRY
+- ✅ **Documentazione**: Inline help, esempi d'uso, parametri documentati
 
 #### 📊 Monitoring Layer
 - **Actuator**: Health, metrics, info
@@ -473,19 +506,19 @@ docker push your-registry/hazelcast-demo:v1.1.0
 #### Setup Automatico (⭐ Raccomandato)
 ```powershell
 # Windows - Setup completo automatico
-.\setup-openshift-local.ps1
+.\scripts\setup\setup-openshift-local.ps1
 
 # Il script eseguirà:
-# 1. Verifica prerequisiti
-# 2. Setup PostgreSQL
-# 3. Deploy applicazione (2 repliche)
-# 4. Configurazione networking
-# 5. Test automatici
-```
+# 1. Installazione/configurazione CRC
+# 2. Verifica prerequisiti completa
+# 3. Setup PostgreSQL
+# 4. Deploy applicazione (2 repliche)
+# 5. Configurazione networking e routes
+# 6. Test automatici e validazione
 
-```bash
-# Linux/Mac - Setup completo automatico  
-./setup-openshift-local.sh
+# Opzioni avanzate:
+.\scripts\setup\setup-openshift-local.ps1 -Action all -Memory 16384 -Cpus 6
+.\scripts\setup\setup-openshift-local.ps1 -Action deploy -Namespace custom-namespace
 ```
 
 #### Setup Manuale
@@ -619,9 +652,234 @@ kubectl autoscale deployment hazelcast-demo --cpu-percent=70 --min=2 --max=10
 
 ---
 
+## 🛠️ Script di Automazione
+
+### Struttura Script Modulari
+
+La nuova architettura di script sostituisce completamente i vecchi script monolitici con una soluzione modulare e riutilizzabile:
+
+```
+scripts/
+├── 📖 README.md                          # Documentazione completa script
+├── utilities/                            # Funzioni condivise
+│   ├── 🔧 common-functions.ps1           # Libreria utilità (810+ righe)
+│   │   ├── Logging avanzato con colori   # Write-Info, Write-Success, Write-Error
+│   │   ├── Retry logic con backoff       # Invoke-WithRetry, Wait-For-Condition  
+│   │   ├── Gestione checkpoint/recovery  # Save-Checkpoint, Restore-Checkpoint
+│   │   ├── Utilità progetto e Git        # Get-ProjectRoot, Get-GitBranch
+│   │   └── Funzioni stato applicazione   # Test-ApplicationHealth
+│   └── ✅ environment-check.ps1          # Verifica prerequisiti
+│       ├── Java, Maven, Docker, Git      # Check versioni e configurazione
+│       ├── Sistema (CPU, memoria, disco) # Controllo risorse hardware
+│       └── Network e connectivity         # Test connessioni esterne
+├── setup/                                # Script di configurazione
+│   ├── 🚀 setup-dev-environment.ps1      # Setup sviluppo locale completo
+│   │   ├── Verifica e installazione tool # Java, Maven, Docker
+│   │   ├── Configurazione ambiente       # Variables, profiles, database
+│   │   ├── Build e test iniziale         # Maven clean install
+│   │   └── Validazione setup            # Health check, API testing
+│   └── 🏗️ setup-openshift-local.ps1      # Setup OpenShift Local automatico
+│       ├── Installazione CRC            # Download, install, configure
+│       ├── Cluster management           # Start, stop, resource allocation
+│       ├── Database deployment          # PostgreSQL setup
+│       └── Application deployment       # Build, push, deploy, routes
+├── development/                          # Tool di sviluppo
+│   ├── 🎯 cluster-manager.ps1            # Gestione cluster Hazelcast (800+ righe)
+│   │   ├── Multi-instance startup       # Cluster con N nodi configurabile
+│   │   ├── Background job management    # PowerShell jobs per processi
+│   │   ├── Health monitoring           # Controllo stato cluster
+│   │   ├── Cache testing e sync        # Test distribuzione dati
+│   │   └── Graceful shutdown          # Stop ordinato con cleanup
+│   └── 🧪 test-api-endpoints.ps1         # Testing API completo (900+ righe)
+│       ├── Test suite comprehensive     # Health, CRUD, cache, docs
+│       ├── Performance testing         # Latency, throughput metrics
+│       ├── Stress testing             # Concurrent requests, load
+│       ├── Error handling validation   # 404, 400, malformed requests
+│       └── Results export            # JSON reports, metrics
+└── build/                               # Build e deployment
+    └── 🏗️ build-and-deploy.ps1           # Automazione completa
+        ├── Multi-environment support     # dev, staging, prod, cloud
+        ├── Multi-target deployment      # local, docker, openshift, k8s
+        ├── Container image management   # Build, tag, push, registry
+        └── Deployment orchestration     # Rolling updates, health checks
+```
+
+### Setup e Configurazione
+
+#### Quick Start - Ambiente Sviluppo
+```powershell
+# Setup completo ambiente sviluppo in un comando
+.\scripts\setup\setup-dev-environment.ps1
+
+# Setup con opzioni avanzate
+.\scripts\setup\setup-dev-environment.ps1 -Clean -Verbose
+```
+
+#### OpenShift Local - Setup Automatico
+```powershell
+# Setup completo OpenShift Local (installazione + deploy)
+.\scripts\setup\setup-openshift-local.ps1 -Action all
+
+# Setup personalizzato con risorse specifiche
+.\scripts\setup\setup-openshift-local.ps1 -Action all -Memory 16384 -Cpus 6 -Namespace custom-demo
+
+# Solo deploy applicazione (CRC già configurato)
+.\scripts\setup\setup-openshift-local.ps1 -Action deploy
+```
+
+### Development Tools
+
+#### Gestione Cluster Locale
+```powershell
+# Avvia cluster multi-istanza per sviluppo
+.\scripts\development\cluster-manager.ps1 -Action start-cluster -Instances 3
+
+# Monitoring e status cluster
+.\scripts\development\cluster-manager.ps1 -Action status
+
+# Test distribuzione cache tra nodi
+.\scripts\development\cluster-manager.ps1 -Action test-cache-sync
+
+# Scaling dinamico cluster
+.\scripts\development\cluster-manager.ps1 -Action scale-cluster -Instances 5
+
+# Stop graceful con cleanup
+.\scripts\development\cluster-manager.ps1 -Action stop-cluster
+```
+
+#### Testing API Automatizzato
+```powershell
+# Test base API endpoints
+.\scripts\development\test-api-endpoints.ps1 -TestLevel basic
+
+# Test completo con performance metrics
+.\scripts\development\test-api-endpoints.ps1 -TestLevel comprehensive -ExportResults
+
+# Stress testing con configurazione custom
+.\scripts\development\test-api-endpoints.ps1 -TestLevel stress -StressIterations 1000 -ConcurrentRequests 10
+
+# Test su ambiente remoto
+.\scripts\development\test-api-endpoints.ps1 -BaseUrl "https://myapp.openshift.com" -TestLevel comprehensive
+```
+
+### Build e Deploy
+
+#### Build Multi-Ambiente
+```powershell
+# Build e test per sviluppo
+.\scripts\build\build-and-deploy.ps1 -Action build -Environment dev
+
+# Package completo con test
+.\scripts\build\build-and-deploy.ps1 -Action package -Environment staging
+
+# Build con container image
+.\scripts\build\build-and-deploy.ps1 -Action all -Environment prod -Target docker -Push
+```
+
+#### Deploy Multi-Target
+```powershell
+# Deploy locale per sviluppo
+.\scripts\build\build-and-deploy.ps1 -Action deploy -Target local -Environment dev
+
+# Deploy su Docker
+.\scripts\build\build-and-deploy.ps1 -Action all -Target docker -Environment staging
+
+# Deploy su OpenShift
+.\scripts\build\build-and-deploy.ps1 -Action all -Target openshift -Environment prod -Namespace production
+
+# Deploy su Kubernetes
+.\scripts\build\build-and-deploy.ps1 -Action all -Target kubernetes -Environment cloud -Registry my-registry.com
+```
+
+### Caratteristiche Avanzate Scripts
+
+#### Robustezza e Affidabilità
+- ✅ **Retry Logic**: Operazioni critiche con backoff exponential
+- ✅ **Checkpoint/Recovery**: Resume operazioni interrotte
+- ✅ **Error Handling**: Gestione errori graceful con rollback
+- ✅ **Logging Dettagliato**: Multi-level con colori e timestamp
+- ✅ **Validation**: Controlli prerequisiti e stato sistema
+
+#### Flessibilità e Configurazione  
+- ✅ **Multi-Environment**: Supporto dev, staging, prod, cloud
+- ✅ **Multi-Target**: Deploy su local, docker, openshift, kubernetes
+- ✅ **Parametrizzazione**: Ogni aspetto configurabile via parametri
+- ✅ **Dry-Run Mode**: Preview operazioni senza esecuzione
+- ✅ **Verbose Mode**: Debug dettagliato per troubleshooting
+
+#### Performance e Scalabilità
+- ✅ **Background Jobs**: Operazioni parallele con PowerShell jobs
+- ✅ **Resource Management**: Monitoring CPU, memoria, disco
+- ✅ **Performance Metrics**: Tempo esecuzione, throughput
+- ✅ **Concurrent Operations**: Multi-thread per operazioni intensive
+- ✅ **Optimized Caching**: Minimizzazione rebuild e re-download
+
+📖 **[Documentazione Completa Scripts →](scripts/README.md)**
+
+---
+
 ## 🧪 Testing
 
-### Test Locali
+### Test Automatizzati con Script
+
+#### API Testing Completo (⭐ Raccomandato)
+```powershell
+# Test suite completa con metriche performance
+.\scripts\development\test-api-endpoints.ps1 -TestLevel comprehensive -ExportResults
+
+# Test base rapido
+.\scripts\development\test-api-endpoints.ps1 -TestLevel basic
+
+# Stress testing per validazione performance
+.\scripts\development\test-api-endpoints.ps1 -TestLevel stress -StressIterations 1000
+
+# Test su ambiente remoto
+.\scripts\development\test-api-endpoints.ps1 -BaseUrl "https://myapp-demo.apps.crc.testing" -TestLevel comprehensive
+```
+
+**Cosa testa automaticamente:**
+- ✅ **Health Endpoints**: `/actuator/health`, readiness, liveness, metrics
+- ✅ **User API CRUD**: Create, Read, Update, Delete con validazione dati
+- ✅ **Cache Performance**: Cache hit/miss, response time optimization  
+- ✅ **Error Handling**: 404, 400, malformed JSON requests
+- ✅ **Documentation**: Swagger UI, OpenAPI specification
+- ✅ **Performance Metrics**: Latency, throughput, concurrent requests
+- ✅ **Stress Testing**: High load, error rate analysis
+
+**Output esempio:**
+```
+🧪 Hazelcast Demo - API Endpoints Testing
+==========================================
+Base URL: http://localhost:8080
+Test Level: comprehensive
+
+🔍 Testing Health & Actuator Endpoints
+=======================================
+  ✅ [PASS] Health Endpoint (Response time: 45ms)
+  ✅ [PASS] Component: db (Status: UP)  
+  ✅ [PASS] Component: hazelcast (Status: UP)
+  ✅ [PASS] Readiness Probe (Response time: 12ms)
+
+👤 Testing User API Endpoints  
+==============================
+  ✅ [PASS] Create User (User created with ID: 1) (Response time: 156ms)
+  ✅ [PASS] Get User by ID (Retrieved user: API Test User) (Response time: 23ms) 
+  ✅ [PASS] User Data Validation (All fields match)
+  ✅ [PASS] Update User (Response time: 89ms)
+  ✅ [PASS] Delete User (Response time: 67ms)
+
+📊 API Testing Summary
+======================
+Overall Results:
+  • Total Tests: 15
+  • Passed: 15  
+  • Failed: 0
+  • Duration: 0m 12s
+
+🎉 ALL TESTS PASSED! 🎉
+```
+
+### Test Locali con Maven
 
 #### Unit Tests
 ```bash
@@ -631,6 +889,9 @@ kubectl autoscale deployment hazelcast-demo --cpu-percent=70 --min=2 --max=10
 # Test specifici
 ./mvnw test -Dtest=UserControllerTest
 ./mvnw test -Dtest=CacheServiceTest
+
+# Test con coverage report
+./mvnw test jacoco:report
 ```
 
 #### Integration Tests
@@ -640,6 +901,9 @@ kubectl autoscale deployment hazelcast-demo --cpu-percent=70 --min=2 --max=10
 
 # Test cache distribuita
 ./mvnw test -Dtest=HazelcastIntegrationTest
+
+# Test completi inclusi integration
+.\scripts\build\build-and-deploy.ps1 -Action test -Environment dev
 ```
 
 ### API Testing
@@ -955,7 +1219,27 @@ grep -i "error\|exception\|failed" app.log
 
 ### Changelog
 
-#### [2.0.0] - 2025-09-01 (Corrente)
+#### [2.2.0] - 2025-09-02 (🔥 Release Corrente)
+
+**✅ Completata Ristrutturazione Script Modulari:**
+- **Architettura Rinnovata**: Da script monolitici (2165+ righe) a sistema modulare error-free
+- **7 Script PowerShell Ottimizzati**: Tutti testati e verificati sintatticamente
+- **810+ Righe Common Functions**: Libreria condivisa con logging, retry logic, health checks
+- **900+ Righe Testing Suite**: Sistema completo di test API automatizzati  
+- **800+ Righe Cluster Manager**: Gestione avanzata cluster multi-istanza
+
+**🔧 Correzioni Tecniche:**
+- **PowerShell Best Practices**: Risolte tutte le violazioni automatiche ($args, $Profile, $sender)
+- **Syntax Compliance**: Switch statements, null comparisons, verb naming corretti
+- **Error Handling**: Gestione robusta errori con retry logic e recovery
+- **Module System**: Rimosso Export-ModuleMember per compatibilità script
+
+**📖 Documentazione Aggiornata:**
+- **Sezione Scripts**: Documentazione completa nuova architettura
+- **Testing Guide**: Procedure automatizzate con script
+- **Troubleshooting**: Guida risoluzione problemi comuni
+
+#### [2.1.0] - 2025-09-01
 
 **Added:**
 - ✅ **Documentazione Unificata**: Consolidati 9 file in unico documento completo
@@ -1022,11 +1306,11 @@ Questo progetto fornisce una **base solida e completa** per applicazioni enterpr
 - ✅ **Testing automatizzato**
 
 **🚀 Prossimi passi consigliati:**
-1. Setup ambiente sviluppo locale  
-2. Esplora API con Swagger UI
-3. Deploy su OpenShift Local
-4. Integrazione CI/CD pipeline
-5. Estensione con nuove funzionalità
+1. **Setup ambiente sviluppo locale**: `.\scripts\setup\setup-dev-environment.ps1`
+2. **Esplora API con testing automatico**: `.\scripts\development\test-api-endpoints.ps1 -TestLevel comprehensive`
+3. **Deploy su OpenShift Local**: `.\scripts\setup\setup-openshift-local.ps1 -Action all`
+4. **Gestione cluster multi-istanza**: `.\scripts\development\cluster-manager.ps1 -Action start-cluster -Instances 3`
+5. **Estensione con nuove funzionalità**: Usa l'architettura modulare esistente
 
 **💡 Hai domande o suggerimenti?**  
 Apri una issue su GitHub o contatta direttamente: antonio.galluzzi91@gmail.com

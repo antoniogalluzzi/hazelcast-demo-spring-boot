@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2025-09-02
+
+### 🚀 Major - Nuova Architettura Script Modulari
+
+#### Added
+- **Sistema Script Completamente Rinnovato**: Architettura modulare che sostituisce i vecchi script monolitici
+  - `scripts/README.md` - Documentazione completa dei nuovi script (800+ righe)
+  - `scripts/utilities/common-functions.ps1` - Libreria funzioni condivise (800+ righe)
+    - Sistema logging avanzato con colori (Write-Info, Write-Success, Write-Error)
+    - Retry logic con backoff exponential per operazioni critiche
+    - Checkpoint/recovery per resume operazioni interrotte
+    - Utilità progetto (Get-ProjectRoot, Get-GitBranch, Test-ApplicationHealth)
+  - `scripts/utilities/environment-check.ps1` - Verifica prerequisiti completa
+    - Check versioni Java, Maven, Docker, Git, OpenShift CLI
+    - Controllo risorse sistema (CPU, memoria, disco)
+    - Test connectivity e network configuration
+
+#### Added - Script di Setup
+- **`scripts/setup/setup-dev-environment.ps1`** - Setup sviluppo locale automatizzato
+  - Verifica e installazione tool mancanti
+  - Configurazione ambiente con variables e profiles
+  - Build iniziale con Maven clean install
+  - Validazione setup con health check e API testing
+- **`scripts/setup/setup-openshift-local.ps1`** - Setup OpenShift Local completo (sostituisce il vecchio)
+  - Installazione automatica Red Hat OpenShift Local (CRC)
+  - Gestione completa cluster (start, stop, resource allocation)
+  - Deploy automatico PostgreSQL e application
+  - Configurazione networking e routes
+
+#### Added - Development Tools  
+- **`scripts/development/cluster-manager.ps1`** - Gestione cluster Hazelcast avanzata (800+ righe)
+  - Startup multi-istanza configurabile (2-10 nodi)
+  - Background job management con PowerShell jobs
+  - Health monitoring e status reporting real-time
+  - Test distribuzione cache e sincronizzazione dati
+  - Graceful shutdown con cleanup automatico
+- **`scripts/development/test-api-endpoints.ps1`** - Testing API completo (900+ righe)
+  - Test suite comprehensive (health, CRUD, cache, docs, error handling)
+  - Performance testing con metriche latency e throughput
+  - Stress testing con concurrent requests e load analysis
+  - Export risultati in formato JSON per CI/CD integration
+
+#### Added - Build e Deploy
+- **`scripts/build/build-and-deploy.ps1`** - Automazione build e deploy completa
+  - Multi-environment support (dev, staging, prod, openshift-local, cloud)
+  - Multi-target deployment (local, docker, openshift, kubernetes)
+  - Container image management (build, tag, push, registry)
+  - Deployment orchestration con health checks
+
+### 🗑️ Removed - Cleanup Architetturale
+- **Eliminati Script Monolitici**: Rimossi i vecchi script da 2000+ righe totali
+  - ❌ `setup-openshift-local.ps1` (1294 righe) - Sostituito da versione modulare
+  - ❌ `start-local-dev.ps1` (871 righe) - Sostituito da cluster-manager.ps1 e setup-dev-environment.ps1
+
+### 📚 Changed - Documentazione Aggiornata
+- **`README.md`** - Aggiornato con nuova struttura script e quick commands
+- **`DOCUMENTATION.md`** - Nuova sezione dedicata "Script di Automazione" con guida completa
+  - Documentazione dettagliata di ogni script con esempi
+  - Sezione caratteristiche avanzate (robustezza, flessibilità, performance)
+  - Integration nella sezione Testing con riferimenti ai nuovi script automatizzati
+
+### ✨ Benefits della Nuova Architettura
+- **Modularità**: Funzioni comuni condivise, specializzazione per funzionalità
+- **Riusabilità**: Libreria utilities utilizzabile da tutti gli script
+- **Robustezza**: Retry logic, checkpoint/recovery, gestione errori avanzata
+- **Flessibilità**: Multi-ambiente, multi-target, parametrizzazione completa
+- **Manutenibilità**: Codice organizzato, documentato, facile da estendere
+- **Performance**: Background jobs, operazioni parallele, caching ottimizzato
+
 ## [Unreleased]
 
 ### Added

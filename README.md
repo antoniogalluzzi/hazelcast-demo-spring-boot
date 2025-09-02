@@ -56,7 +56,9 @@ curl http://localhost:8080/actuator/health
 
 ### 🚀 **DevOps** 
 ```powershell
-.\setup-openshift-local.ps1  # Setup completo automatico
+.\scripts\setup\setup-dev-environment.ps1     # Setup sviluppo locale
+.\scripts\setup\setup-openshift-local.ps1     # Setup OpenShift Local
+.\scripts\build\build-and-deploy.ps1          # Build e deploy automatico
 ```
 
 ### 🧪 **Tester**
@@ -155,7 +157,57 @@ curl http://localhost:8080/cache/stats
 - **Secrets**: Environment-based configuration
 - **Network**: Service mesh ready
 
-## 📞 Supporto e Contributi
+## �️ Script di Automazione
+
+### 📁 **Nuova Struttura Script Modulari**
+
+La nuova collezione di script PowerShell modulari sostituisce completamente i vecchi script monolitici:
+
+```
+scripts/
+├── 📖 README.md                    # Documentazione completa script
+├── utilities/
+│   ├── 🔧 common-functions.ps1     # Libreria funzioni condivise  
+│   └── ✅ environment-check.ps1    # Verifica prerequisiti
+├── setup/
+│   ├── 🚀 setup-dev-environment.ps1      # Setup sviluppo locale
+│   └── 🔴 setup-openshift-local.ps1      # Setup OpenShift Local
+├── development/
+│   ├── 🎯 cluster-manager.ps1            # Gestione cluster locale
+│   └── 🧪 test-api-endpoints.ps1         # Testing API completo
+└── build/
+    └── 🏗️ build-and-deploy.ps1           # Build e deploy automatico
+```
+
+### 🎯 **Quick Commands**
+
+```powershell
+# Setup completo ambiente sviluppo
+.\scripts\setup\setup-dev-environment.ps1
+
+# Test completo API con metriche performance  
+.\scripts\development\test-api-endpoints.ps1 -TestLevel comprehensive
+
+# Gestione cluster multi-istanza
+.\scripts\development\cluster-manager.ps1 -Action start-cluster -Instances 3
+
+# Build e deploy multi-ambiente
+.\scripts\build\build-and-deploy.ps1 -Environment prod -Target kubernetes
+
+# Setup OpenShift Local completo
+.\scripts\setup\setup-openshift-local.ps1 -Action all
+```
+
+### ✨ **Caratteristiche Scripts**
+- ✅ **Modulari**: Funzioni comuni condivise, specializzazione per funzionalità
+- ✅ **Robusti**: Retry logic, checkpoint/recovery, gestione errori avanzata  
+- ✅ **Flessibili**: Multi-ambiente, multi-target, parametri configurabili
+- ✅ **Completi**: Copertura totale ciclo sviluppo e deployment
+- ✅ **Documentati**: Help integrato, logging dettagliato, esempi d'uso
+
+📖 **[Guida Completa Scripts →](scripts/README.md)**
+
+## �📞 Supporto e Contributi
 
 ### 👤 Autore
 **Antonio Galluzzi**
@@ -373,11 +425,20 @@ L'app espone metriche tramite Spring Boot Actuator quando il profilo è abilitat
 
 #### Per Windows (PowerShell)
 ```powershell
-./setup-openshift-local.ps1 -Command start
-./setup-openshift-local.ps1 -Command deploy
-./setup-openshift-local.ps1 -Command test
-./setup-openshift-local.ps1 -Command info
-./setup-openshift-local.ps1 -Command cleanup
+# Setup completo ambiente sviluppo
+.\scripts\setup\setup-dev-environment.ps1
+
+# Setup OpenShift Local automatico
+.\scripts\setup\setup-openshift-local.ps1 -Action all
+
+# Deploy solo applicazione (CRC già configurato)
+.\scripts\setup\setup-openshift-local.ps1 -Action deploy
+
+# Test API completo
+.\scripts\development\test-api-endpoints.ps1 -TestLevel comprehensive
+
+# Status cluster e monitoring
+.\scripts\setup\setup-openshift-local.ps1 -Action status
 ```
 
 **Cosa include il setup completo:**
